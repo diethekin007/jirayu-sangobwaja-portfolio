@@ -742,31 +742,14 @@ export default function Home() {
               <div className="w-12 h-[3px] bg-[var(--accent-red)] mb-8 mx-auto lg:mx-0"></div>
             </ScrollReveal>
             <div className="flex flex-col gap-8 items-center lg:items-start text-center lg:text-left">
-              <ScrollReveal delay={150}>
-                <div className="relative group flex-shrink-0">
-                  {/* Glowing background */}
-                  <div className="absolute inset-0 bg-[var(--accent-red)] blur-[35px] rounded-full opacity-20 group-hover:opacity-40 transition-opacity duration-700 -z-10 scale-90"></div>
-                  
-                  {/* Circular Image Container */}
-                  <div className="relative w-[160px] h-[160px] sm:w-[180px] sm:h-[180px] rounded-full overflow-hidden border-2 border-white/5 bg-[#111] group-hover:border-[var(--accent-red)]/50 transition-all duration-500 shadow-2xl group-hover:shadow-[0_0_30px_rgba(139,26,26,0.2)]">
-                    <Image 
-                      src="/assets/about_me.png" 
-                      alt="About Me" 
-                      width={180} 
-                      height={180} 
-                      className="w-full h-full object-cover object-[center_15%] group-hover:scale-110 transition-transform duration-700" 
-                    />
-                  </div>
-                </div>
-              </ScrollReveal>
               <div className="flex-1 w-full">
-                <ScrollReveal delay={300}>
+                <ScrollReveal delay={150}>
                   <p className="text-[0.95rem] mb-5 text-[var(--text-muted)] leading-relaxed font-light">Hi, I'm Jirayu Sangobwaja, a Computer Science student who loves turning ideas into functional, well-designed web applications. My focus is on front-end development with React and Next.js, and I'm currently expanding into backend technologies to become a stronger full-stack developer.</p>
                 </ScrollReveal>
-                <ScrollReveal delay={450}>
+                <ScrollReveal delay={300}>
                   <p className="text-[0.95rem] mb-7 text-[var(--text-muted)] leading-relaxed font-light">I'm looking for a Software Engineering Internship where I can apply what I've learned, collaborate with real teams, and keep leveling up my skills.</p>
                 </ScrollReveal>
-                <ScrollReveal delay={600}>
+                <ScrollReveal delay={450}>
                   <div className="flex flex-wrap justify-center lg:justify-start gap-3">
                     {['Frontend Development', 'React & Next.js', 'Problem solver', 'Always learning'].map((item, idx) => (
                       <span key={idx} className="bg-[#111] border border-white/5 px-4 py-2 rounded-full text-[0.7rem] tracking-[1px] text-[var(--text-muted)] hover:text-white hover:border-[var(--accent-red)] hover:bg-[var(--accent-red)]/10 hover:-translate-y-1 transition-all duration-300 shadow-lg cursor-default">
