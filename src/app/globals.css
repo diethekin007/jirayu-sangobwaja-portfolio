@@ -77,6 +77,29 @@
   will-change: transform, opacity, clip-path;
 }
 
+@media (max-width: 639px) {
+  .huge-title {
+    font-size: clamp(3.25rem, 18vw, 5.25rem);
+    line-height: 0.9;
+    letter-spacing: -1px;
+  }
+
+  .noise-overlay {
+    opacity: 0.018;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .rotating-badge,
+  .animate-marquee {
+    animation: none;
+  }
+}
+
 body.is-loaded .huge-title {
   animation: premiumReveal 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards;
 }

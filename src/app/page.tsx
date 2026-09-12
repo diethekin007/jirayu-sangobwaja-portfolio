@@ -212,20 +212,20 @@ function ImageCarousel({ images, alt, children }: { images: string[], alt: strin
         <>
           <button
             onClick={(e) => { e.stopPropagation(); setCurrentIndex(prev => prev === 0 ? images.length - 1 : prev - 1); }}
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/40 backdrop-blur-md hover:bg-[var(--accent-red)] text-white flex items-center justify-center transition-all duration-300 z-20 border border-white/10 opacity-0 group-hover:opacity-100"
+            className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/55 backdrop-blur-md hover:bg-[var(--accent-red)] text-white flex items-center justify-center transition-all duration-300 z-20 border border-white/15 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
             aria-label="Previous image"
           >
             <ChevronLeft size={20} />
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); setCurrentIndex(prev => prev === images.length - 1 ? 0 : prev + 1); }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/40 backdrop-blur-md hover:bg-[var(--accent-red)] text-white flex items-center justify-center transition-all duration-300 z-20 border border-white/10 opacity-0 group-hover:opacity-100"
+            className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/55 backdrop-blur-md hover:bg-[var(--accent-red)] text-white flex items-center justify-center transition-all duration-300 z-20 border border-white/15 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
             aria-label="Next image"
           >
             <ChevronRight size={20} />
           </button>
 
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
             {images.map((_, idx) => (
               <button
                 key={idx}
@@ -453,7 +453,7 @@ export default function Home() {
       document.body.style.overflow = 'unset';
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [selectedProject]);
+  }, [selectedProject, isMobileMenuOpen]);
   return (
     <>
       <Preloader />
@@ -461,7 +461,7 @@ export default function Home() {
       <SideNav />
 
       {/* Sticky Glass Header */}
-      <header className="sticky top-0 z-[100] w-full flex justify-between items-center px-6 lg:px-10 py-5 text-[0.8rem] tracking-[2px] uppercase border-b border-white/5 bg-[#080808]/70 backdrop-blur-md text-[var(--text-muted)] transition-all duration-300">
+      <header className="sticky top-0 z-[100] w-full flex justify-between items-center px-4 sm:px-6 lg:px-10 py-3.5 sm:py-5 text-[0.8rem] tracking-[2px] uppercase border-b border-white/5 bg-[#080808]/85 backdrop-blur-md text-[var(--text-muted)] transition-all duration-300">
         <div className="font-heading text-lg font-bold text-white tracking-[4px]">JIRAYU<span className="text-[var(--accent-red)]">.</span>S</div>
 
         <div className="flex items-center gap-6">
@@ -481,7 +481,7 @@ export default function Home() {
       </header>
 
       {/* Full-screen Mobile Menu */}
-      <div className={`fixed inset-0 z-[200] bg-[#050505]/95 backdrop-blur-lg flex flex-col justify-center px-10 transition-all duration-500 ${isMobileMenuOpen ? 'opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'}`}>
+      <div className={`fixed inset-0 z-[200] bg-[#050505]/95 backdrop-blur-lg flex flex-col justify-center px-6 sm:px-10 transition-all duration-500 ${isMobileMenuOpen ? 'opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'}`}>
         <button
           className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center rounded-full border border-[var(--border-color)] bg-[#111] text-[var(--text-muted)] hover:text-white hover:bg-[var(--accent-red)] hover:border-[var(--accent-red)] transition-all duration-300"
           onClick={() => setIsMobileMenuOpen(false)}
@@ -500,7 +500,7 @@ export default function Home() {
               <div className="w-14 h-14 rounded-full bg-[#111] border border-white/10 flex items-center justify-center text-[var(--text-muted)] group-hover:text-white group-hover:bg-[var(--accent-red)] group-hover:border-[var(--accent-red)] transition-all duration-300 shadow-lg">
                 <item.icon size={24} />
               </div>
-              <div className="font-heading text-4xl font-bold tracking-[2px] text-[var(--text-muted)] group-hover:text-white transition-colors duration-300">
+              <div className="font-heading text-2xl min-[380px]:text-3xl sm:text-4xl font-bold tracking-[2px] text-[var(--text-muted)] group-hover:text-white transition-colors duration-300">
                 {item.name}
               </div>
             </div>
@@ -509,7 +509,7 @@ export default function Home() {
       </div>
 
       <div className="sticky top-5 h-0 w-full z-20 pointer-events-none">
-        <div className="rotating-badge absolute left-10 top-4 fill-[var(--text-muted)]">
+        <div className="rotating-badge absolute left-10 top-4 fill-[var(--text-muted)] hidden lg:block">
           <svg viewBox="0 0 100 100" width="120" height="120">
             <defs>
               <path id="circle" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" />
@@ -523,30 +523,30 @@ export default function Home() {
         </div>
       </div>
 
-      <main className="max-w-[1400px] mx-auto px-10">
+      <main className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 overflow-hidden">
         {/* Hero Section */}
-        <section id="home" className="relative pt-10 scroll-mt-24">
-          <h1 className="huge-title text-center -mb-10 relative z-10 text-[var(--text-main)]">PORTFOLIO</h1>
+        <section id="home" className="relative pt-7 sm:pt-10 scroll-mt-24">
+          <h1 className="huge-title text-center mb-0 lg:-mb-10 relative z-10 text-[var(--text-main)]">PORTFOLIO</h1>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr_1fr] gap-10 lg:gap-10 mt-5 items-end text-center lg:text-left">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr_1fr] gap-8 lg:gap-10 mt-2 lg:mt-5 items-end text-center lg:text-left">
 
-            <div className="flex flex-col items-center lg:items-start">
-              <h2 className="font-heading text-4xl mb-5 leading-tight">CS STUDENT</h2>
-              <ul className="list-none text-[0.85rem] tracking-[2px] text-[var(--text-muted)] mb-14 space-y-1">
+            <div className="flex flex-col items-center lg:items-start order-3 lg:order-1">
+              <h2 className="font-heading text-3xl sm:text-4xl mb-4 sm:mb-5 leading-tight">CS STUDENT</h2>
+              <ul className="list-none text-[0.75rem] sm:text-[0.85rem] tracking-[2px] text-[var(--text-muted)] mb-8 lg:mb-14 space-y-1">
                 <li>SOFTWARE DEVELOPMENT</li>
                 <li>FRONT-END DEV</li>
                 <li>REACT & NEXT.JS</li>
               </ul>
 
-              <div className="border-l-2 border-[var(--accent-red)] pl-5 relative text-left">
+              <div className="border-l-2 border-[var(--accent-red)] pl-4 sm:pl-5 relative text-left max-w-md">
                 <Quote className="text-[var(--accent-red)] w-6 h-6 mb-2.5" />
                 <p className="text-[0.9rem] tracking-[1px] font-medium uppercase mb-4">I BUILD FUNCTIONAL, WELL-DESIGNED WEB APPLICATIONS AND LOVE SOLVING PROBLEMS.</p>
-                <div className="font-heading italic text-2xl text-[var(--text-muted)]">Jirayu Sangobwaja</div>
+                <div className="font-heading italic text-xl sm:text-2xl text-[var(--text-muted)]">Jirayu Sangobwaja</div>
               </div>
             </div>
 
-            <div className="flex justify-center relative z-20">
-              <div className="relative w-full max-w-[400px] flex justify-center items-end translate-y-10">
+            <div className="flex justify-center relative z-20 order-1 lg:order-2">
+              <div className="relative w-full max-w-[310px] sm:max-w-[360px] lg:max-w-[400px] flex justify-center items-end lg:translate-y-10">
                 {/* Breathing Aura */}
                 <div className="absolute w-[90%] aspect-square rounded-full top-[10%] left-1/2 -translate-x-1/2 -z-10 blur-[50px] opacity-80 animate-pulse" style={{ animationDuration: '4s' }}>
                   <div className="absolute inset-0 bg-[#7a1010] rounded-full"></div>
@@ -556,21 +556,21 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="pb-5 flex flex-col items-center lg:items-start">
-              <h2 className="font-heading text-5xl leading-none mb-2.5">JIRAYU<br />SANGOBWAJA</h2>
-              <p className="text-[0.9rem] text-[var(--accent-red)] tracking-[2px] font-semibold mb-5">CS STUDENT & DEVELOPER</p>
-              <p className="text-[0.9rem] text-[var(--text-muted)] mb-8 max-w-[300px] text-center lg:text-left">I'm a Computer Science student passionate about front-end development. I'm actively looking for a software engineering internship to apply my skills and learn from real teams.</p>
+            <div className="pb-2 lg:pb-5 flex flex-col items-center lg:items-start order-2 lg:order-3">
+              <h2 className="font-heading text-4xl sm:text-5xl leading-none mb-2.5">JIRAYU<br />SANGOBWAJA</h2>
+              <p className="text-[0.75rem] sm:text-[0.9rem] text-[var(--accent-red)] tracking-[2px] font-semibold mb-4 sm:mb-5">CS STUDENT & DEVELOPER</p>
+              <p className="text-[0.85rem] sm:text-[0.9rem] leading-relaxed text-[var(--text-muted)] mb-6 sm:mb-8 max-w-[360px] lg:max-w-[300px] text-center lg:text-left">I'm a Computer Science student passionate about front-end development. I'm actively looking for a software engineering internship to apply my skills and learn from real teams.</p>
 
               <a
                 href="/RESUME_JIRAYU.pdf"
                 target="_blank"
-                className="group inline-flex items-center gap-3 bg-transparent border border-[var(--accent-red)] text-[var(--text-main)] hover:bg-[var(--accent-red)] px-8 py-3.5 rounded-full text-[0.8rem] font-bold tracking-[2px] uppercase transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(139,26,26,0.3)] mb-10"
+                className="group inline-flex items-center gap-3 bg-transparent border border-[var(--accent-red)] text-[var(--text-main)] hover:bg-[var(--accent-red)] px-7 sm:px-8 py-3.5 rounded-full text-[0.75rem] sm:text-[0.8rem] font-bold tracking-[2px] uppercase transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(139,26,26,0.3)] mb-8 sm:mb-10"
               >
                 DOWNLOAD CV
                 <Download size={16} className="group-hover:translate-y-0.5 transition-transform" />
               </a>
 
-              <div className="flex gap-7">
+              <div className="flex gap-6 sm:gap-7">
                 <div className="text-center">
                   <div className="w-10 h-10 border border-[var(--border-color)] rounded-full flex items-center justify-center mx-auto mb-2.5 text-[var(--accent-red)]">
                     <Code2 size={18} />
@@ -598,7 +598,7 @@ export default function Home() {
         </section>
 
         {/* Hollow & Solid Marquee Banner Breakout */}
-        <div className="w-[100vw] relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-[#050505] py-4 my-24 overflow-hidden flex items-center shadow-[0_0_40px_rgba(0,0,0,0.5)] transform -rotate-2 z-10 border-y border-white/5 hover:scale-[1.02] transition-transform duration-500">
+        <div className="w-[100vw] relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-[#050505] py-3 sm:py-4 my-16 sm:my-20 lg:my-24 overflow-hidden flex items-center shadow-[0_0_40px_rgba(0,0,0,0.5)] transform sm:-rotate-2 z-10 border-y border-white/5 hover:scale-[1.02] transition-transform duration-500">
           <div className="flex animate-marquee whitespace-nowrap items-center">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="flex items-center gap-8 px-5 font-heading text-2xl sm:text-3xl font-bold tracking-[4px] uppercase">
@@ -615,7 +615,7 @@ export default function Home() {
 
         {/* What I Do Section */}
         <section className="flex flex-col lg:flex-row gap-8 lg:gap-[60px]">
-          <div className="flex-[0_0_200px] lg:sticky lg:top-32 h-fit">
+          <div className="lg:flex-[0_0_200px] lg:sticky lg:top-32 h-fit">
             <h3 className="font-heading text-3xl font-semibold tracking-[2px] uppercase mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white to-[var(--text-muted)]">WHAT I DO</h3>
             <div className="w-12 h-[3px] bg-gradient-to-r from-[var(--accent-red)] to-transparent rounded-full mb-6"></div>
             <p className="text-[0.85rem] text-[var(--text-muted)] tracking-[1px] hidden lg:block leading-relaxed pr-4">Crafting digital experiences with precision, focusing on user-centric design and scalable architecture.</p>
@@ -632,7 +632,7 @@ export default function Home() {
               { icon: Smartphone, title: 'PROTOTYPING', desc: 'Turning ideas into clickable prototypes and user flows.', span: 'col-span-1' },
               { icon: Grid2X2, title: 'DESIGN SYSTEMS', desc: 'Building consistent design languages and reusable components.', span: 'col-span-1' }
             ].map((service, idx) => (
-              <div key={idx} className={`group relative p-8 rounded-3xl bg-gradient-to-b from-white/[0.03] to-transparent border border-white/[0.05] hover:border-[var(--accent-red)]/40 transition-all duration-500 hover:-translate-y-2 cursor-pointer flex flex-col justify-between overflow-hidden backdrop-blur-sm shadow-lg ${service.span}`}>
+              <div key={idx} className={`group relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-white/[0.03] to-transparent border border-white/[0.05] hover:border-[var(--accent-red)]/40 transition-all duration-500 sm:hover:-translate-y-2 cursor-pointer flex flex-col justify-between overflow-hidden backdrop-blur-sm shadow-lg ${service.span}`}>
                 {/* Hover Inner Glow Effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-red)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
@@ -651,7 +651,7 @@ export default function Home() {
           </div>
         </section>
 
-        <hr className="border-0 border-t border-white/5 my-24 lg:my-32" />
+        <hr className="border-0 border-t border-white/5 my-16 sm:my-24 lg:my-32" />
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-10 lg:gap-20">
           {/* Education Section */}
@@ -732,13 +732,13 @@ export default function Home() {
           </section>
         </div>
 
-        <hr className="border-0 border-t border-white/5 my-24 lg:my-32" />
+        <hr className="border-0 border-t border-white/5 my-16 sm:my-24 lg:my-32" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-10 lg:gap-20 pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-14 lg:gap-20 pb-14 sm:pb-20">
           {/* About Me Section */}
           <section id="about" className="pt-10 -mt-10 scroll-mt-24">
             <ScrollReveal>
-              <h3 className="font-heading text-3xl font-semibold tracking-[2px] uppercase mb-4 text-[var(--text-main)]">ABOUT ME</h3>
+              <h3 className="font-heading text-3xl font-semibold tracking-[2px] uppercase mb-4 text-[var(--text-main)] text-center lg:text-left">ABOUT ME</h3>
               <div className="w-12 h-[3px] bg-[var(--accent-red)] mb-8 mx-auto lg:mx-0"></div>
             </ScrollReveal>
             <div className="flex flex-col gap-8 items-center lg:items-start text-center lg:text-left">
@@ -781,7 +781,7 @@ export default function Home() {
 
           {/* Tools & Testimonial */}
           <section>
-            <h3 className="font-heading text-3xl font-semibold tracking-[2px] uppercase mb-7">TOOLS I USE</h3>
+            <h3 className="font-heading text-3xl font-semibold tracking-[2px] uppercase mb-7 text-center lg:text-left">TOOLS I USE</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-10 w-full">
               {[
                 { name: 'React', icon: <SiReact size={20} color="#61DAFB" /> },
@@ -807,7 +807,7 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="relative p-8 rounded-3xl bg-gradient-to-b from-white/[0.03] to-transparent border border-white/[0.05] hover:border-[var(--accent-red)]/40 transition-all duration-500 overflow-hidden max-w-[500px] mx-auto lg:mx-0 group backdrop-blur-sm shadow-lg hover:-translate-y-2">
+            <div className="relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-white/[0.03] to-transparent border border-white/[0.05] hover:border-[var(--accent-red)]/40 transition-all duration-500 overflow-hidden max-w-[500px] mx-auto lg:mx-0 group backdrop-blur-sm shadow-lg sm:hover:-translate-y-2">
               {/* Hover Inner Glow Effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-red)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
@@ -831,7 +831,7 @@ export default function Home() {
 
         {/* Contact Form Section */}
         <section id="contact" className="mb-10 pt-10 -mt-10 scroll-mt-24">
-          <div className="bg-[#0f0f0f] border border-white/5 rounded-3xl p-10 md:p-16 relative overflow-hidden group transition-all duration-500 hover:border-[var(--accent-red)]/30 shadow-2xl">
+          <div className="bg-[#0f0f0f] border border-white/5 rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-16 relative overflow-hidden group transition-all duration-500 hover:border-[var(--accent-red)]/30 shadow-2xl">
             {/* Minimalist Top Accent Line */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--accent-red)] to-transparent opacity-30 group-hover:opacity-100 transition-opacity duration-700"></div>
 
@@ -841,18 +841,18 @@ export default function Home() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 relative z-10">
               <div>
-                <h3 className="font-heading text-4xl font-semibold tracking-[2px] uppercase mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-[var(--accent-red)]">CONTACT</h3>
+                <h3 className="font-heading text-3xl sm:text-4xl font-semibold tracking-[2px] uppercase mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-[var(--accent-red)]">CONTACT</h3>
                 <p className="text-[0.9rem] text-[var(--text-muted)] mb-10 max-w-md leading-relaxed">
                   Whether you have a question, a project idea, or just want to say hi, my inbox is always open. I'll try my best to get back to you!
                 </p>
                 <div className="flex flex-col gap-6">
-                  <div className="flex items-center gap-5 text-[0.95rem] group/info cursor-default">
+                  <div className="flex items-center gap-3 sm:gap-5 text-[0.95rem] group/info cursor-default min-w-0">
                     <div className="w-12 h-12 rounded-full bg-[#1a1a1a] border border-white/5 flex items-center justify-center text-[var(--accent-red)] group-hover/info:bg-[var(--accent-red)] group-hover/info:text-white transition-all duration-300">
                       <Mail size={18} />
                     </div>
-                    <span className="tracking-[1px] text-[var(--text-muted)] group-hover/info:text-white transition-colors">diethekin007@gmail.com</span>
+                    <span className="tracking-[0.5px] sm:tracking-[1px] text-[0.82rem] sm:text-[0.95rem] text-[var(--text-muted)] group-hover/info:text-white transition-colors break-all">diethekin007@gmail.com</span>
                   </div>
-                  <div className="flex items-center gap-5 text-[0.95rem] group/info cursor-default">
+                  <div className="flex items-center gap-3 sm:gap-5 text-[0.95rem] group/info cursor-default">
                     <div className="w-12 h-12 rounded-full bg-[#1a1a1a] border border-white/5 flex items-center justify-center text-[var(--accent-red)] group-hover/info:bg-[var(--accent-red)] group-hover/info:text-white transition-all duration-300">
                       <Phone size={18} />
                     </div>
@@ -876,7 +876,7 @@ export default function Home() {
                   <label htmlFor="message" className="text-[0.7rem] tracking-[2px] text-[var(--text-muted)] group-focus-within/input:text-white transition-colors uppercase">Message</label>
                   <textarea id="message" required value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} rows={4} className="bg-[#1a1a1a] border border-transparent rounded-xl px-5 py-4 text-[0.95rem] text-white focus:outline-none focus:border-[var(--accent-red)] focus:bg-[#222] transition-all resize-none placeholder:text-[#555]" placeholder="Tell me about your project..."></textarea>
                 </div>
-                <button type="submit" disabled={isSubmitting} className="mt-4 self-start flex items-center gap-3 bg-[var(--accent-red)] hover:bg-[#ff4d4d] disabled:opacity-50 disabled:cursor-not-allowed text-white px-9 py-4 rounded-full text-[0.85rem] font-bold tracking-[2px] uppercase transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(163,71,71,0.3)]">
+                <button type="submit" disabled={isSubmitting} className="mt-2 sm:mt-4 w-full sm:w-auto self-start flex items-center justify-center gap-3 bg-[var(--accent-red)] hover:bg-[#ff4d4d] disabled:opacity-50 disabled:cursor-not-allowed text-white px-9 py-4 rounded-full text-[0.85rem] font-bold tracking-[2px] uppercase transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(163,71,71,0.3)]">
                   {isSubmitting ? 'Sending...' : 'Send Message'}
                   {!isSubmitting && <Send size={18} className="transition-transform group-hover:translate-x-1" />}
                 </button>
@@ -886,7 +886,7 @@ export default function Home() {
         </section>
 
         {/* Minimalist Footer */}
-        <footer className="border-t border-white/5 py-12 mt-20">
+        <footer className="border-t border-white/5 py-8 sm:py-12 mt-14 sm:mt-20 text-center md:text-left">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-[0.75rem] tracking-[1px] text-[var(--text-muted)]">
               &copy; {new Date().getFullYear()} Jirayu Sangobwaja. All rights reserved.
@@ -936,10 +936,10 @@ export default function Home() {
               {/* Header Section */}
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 border-b border-[var(--border-color)] pb-8">
                 <div>
-                  <h2 className="text-4xl sm:text-5xl font-heading font-bold text-white uppercase tracking-widest mb-3 drop-shadow-lg">
+                  <h2 className="text-3xl sm:text-5xl font-heading font-bold text-white uppercase tracking-[0.08em] sm:tracking-widest mb-3 drop-shadow-lg break-words">
                     {selectedProject.modalTitle}
                   </h2>
-                  <p className="text-[var(--accent-red)] text-xs sm:text-sm tracking-[4px] uppercase font-semibold flex items-center gap-2">
+                  <p className="text-[var(--accent-red)] text-[0.65rem] sm:text-sm tracking-[2px] sm:tracking-[4px] uppercase font-semibold flex items-center gap-2">
                     <span className="w-8 h-px bg-[var(--accent-red)]"></span>
                     {selectedProject.desc}
                   </p>
@@ -948,7 +948,7 @@ export default function Home() {
                   href={selectedProject.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-3 px-6 py-3 bg-white/5 hover:bg-[var(--accent-red)] border border-white/10 hover:border-[var(--accent-red)] text-white text-xs tracking-[2px] uppercase transition-all duration-300 no-underline whitespace-nowrap"
+                  className="group inline-flex items-center justify-center gap-3 w-full sm:w-auto px-6 py-3 bg-white/5 hover:bg-[var(--accent-red)] border border-white/10 hover:border-[var(--accent-red)] text-white text-xs tracking-[2px] uppercase transition-all duration-300 no-underline whitespace-nowrap"
                 >
                   View Live Site
                   <ExternalLink size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
