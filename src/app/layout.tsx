@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Bodoni_Moda, Inter } from "next/font/google";
+import { Space_Grotesk, IBM_Plex_Mono, Inter } from "next/font/google";
 import "./globals.css";
 
-const bodoni = Bodoni_Moda({
+const space = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-bodoni",
-  display: "block",
+  variable: "--font-space",
+  display: "swap",
 });
+const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-mono", display: "swap" });
 
 const inter = Inter({
   subsets: ["latin"],
@@ -59,7 +60,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${bodoni.variable} ${inter.variable} antialiased`}>
+      <body className={`${space.variable} ${mono.variable} ${inter.variable} antialiased`}>
         {children}
       </body>
     </html>

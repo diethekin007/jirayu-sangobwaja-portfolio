@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import Image from 'next/image';
 import {
   ArrowUpRight, BookOpen, BriefcaseBusiness, Code2, Download,
-  GraduationCap, Layers3, Mail, Phone, Sparkles, UserRound, X,
+  GraduationCap, Layers3, Mail, Phone, UserRound, X,
 } from 'lucide-react';
 import { SiGithub } from 'react-icons/si';
 
@@ -54,10 +54,24 @@ const projects: Project[] = [
   },
 ];
 
-const skills = [
-  'React', 'Next.js', 'TypeScript', 'JavaScript', 'Tailwind CSS', 'HTML & CSS',
-  'Node.js', 'PostgreSQL', 'Supabase', 'Git', 'Figma', 'Vercel',
+const skillGroups = [
+  { title: 'Interface development', detail: 'My main focus', tools: ['React', 'Next.js', 'TypeScript', 'JavaScript', 'Tailwind CSS', 'HTML & CSS'] },
+  { title: 'Backend & data', detail: 'What I’m learning next', tools: ['Node.js', 'PostgreSQL', 'Supabase'] },
+  { title: 'Design & delivery', detail: 'From prototype to deployment', tools: ['Figma', 'Git', 'Vercel'] },
 ];
+
+// Six related astronomical marks, drawn on the same 32px grid.
+function OrbitMark({ section }: { section: PanelId }) {
+  const paths: Record<PanelId, ReactNode> = {
+    about: <><circle cx="16" cy="16" r="6" /><ellipse cx="16" cy="16" rx="13" ry="8" transform="rotate(-35 16 16)" /><circle cx="26" cy="9" r="2" fill="currentColor" /></>,
+    projects: <><path d="m16 3 12 7v12l-12 7-12-7V10Z M4 10l12 7 12-7 M16 17v12" /><path d="m10 6 12 7" /></>,
+    skills: <><path d="m11 8-8 8 8 8 M21 8l8 8-8 8 M19 4l-6 24" /><circle cx="16" cy="16" r="13" strokeDasharray="1 5" /></>,
+    education: <><path d="m16 3 3 10 10 3-10 3-3 10-3-10-10-3 10-3Z" /><circle cx="16" cy="16" r="12" strokeDasharray="2 5" /></>,
+    contact: <><circle cx="16" cy="16" r="3" /><path d="M10 10a8.5 8.5 0 0 0 0 12 M22 10a8.5 8.5 0 0 1 0 12 M6 6a14 14 0 0 0 0 20 M26 6a14 14 0 0 1 0 20" /></>,
+    resume: <><path d="M9 3h10l5 5v21H9Z M19 3v6h5 M13 14h7 M13 19h7 M13 24h4" /><path d="M5 8v17" /></>,
+  };
+  return <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[section]}</svg>;
+}
 
 const navItems: Array<{ id: PanelId; label: string; eyebrow: string; icon: typeof UserRound; angle: number }> = [
   { id: 'about', label: 'About me', eyebrow: 'Profile', icon: UserRound, angle: -90 },
@@ -125,13 +139,13 @@ function PanelContent({ panel }: { panel: PanelId }) {
         </div>
         <div className="about-copy">
           <SectionTitle eyebrow="01 / Profile">About me</SectionTitle>
-          <p className="panel-lead">I turn ideas into focused, functional digital experiences.</p>
+          <p className="panel-lead">Computer Science student.<br />Front-end developer in progress.</p>
           <p>I&apos;m Jirayu Sangobwaja, a Computer Science student who enjoys front-end development, interaction design and solving product problems with clean code.</p>
           <p>I&apos;m currently expanding into backend development while looking for a Software Engineering Internship where I can build, learn and collaborate with a real team.</p>
           <div className="mini-stats">
-            <div><strong>4+</strong><span>Projects built</span></div>
-            <div><strong>12+</strong><span>Tools used</span></div>
-            <div><strong>100%</strong><span>Ready to learn</span></div>
+            <div><strong>04</strong><span>Selected projects</span></div>
+            <div><strong>React</strong><span>Main focus</span></div>
+            <div><strong>Open</strong><span>To internships</span></div>
           </div>
         </div>
       </div>
@@ -143,16 +157,16 @@ function PanelContent({ panel }: { panel: PanelId }) {
       <div>
         <SectionTitle eyebrow="02 / Selected work">Projects</SectionTitle>
         <div className="project-grid">
-          {projects.map((project) => (
+          {projects.map((project, index) => (
             <article className="project-card" key={project.title}>
               <div className="project-image">
                 <Image src={project.image} alt={project.title} fill sizes="(max-width: 700px) 90vw, 420px" />
               </div>
               <div className="project-copy">
-                <span>{project.category}</span><h3>{project.title}</h3><p>{project.description}</p>
+                <span>{String(index + 1).padStart(2, '0')} / {project.category}</span><h3>{project.title}</h3><p>{project.description}</p>
                 <div className="project-footer">
                   <div className="tag-row">{project.stack.map((item) => <em key={item}>{item}</em>)}</div>
-                  <a href={project.href} target="_blank" rel="noreferrer" aria-label={`Open ${project.title}`}><ArrowUpRight /></a>
+                  <a href={project.href} target="_blank" rel="noreferrer" aria-label={`Open ${project.title}`}>View project <ArrowUpRight /></a>
                 </div>
               </div>
             </article>
@@ -166,12 +180,14 @@ function PanelContent({ panel }: { panel: PanelId }) {
     return (
       <div>
         <SectionTitle eyebrow="03 / Toolbox">Skills & tools</SectionTitle>
-        <p className="panel-lead compact">The technologies I use to move from an idea to a polished product.</p>
+        <p className="panel-lead compact">What I build with, and what I’m learning.</p>
         <div className="skill-grid">
-          {skills.map((skill, index) => (
-            <div className="skill-item" key={skill}>
-              <span>{String(index + 1).padStart(2, '0')}</span><strong>{skill}</strong><Sparkles size={16} />
-            </div>
+          {skillGroups.map((group, index) => (
+            <section className="skill-group" key={group.title}>
+              <span className="group-index">0{index + 1} / {group.detail}</span>
+              <h3>{group.title}</h3>
+              <ul>{group.tools.map(tool => <li key={tool}>{tool}</li>)}</ul>
+            </section>
           ))}
         </div>
       </div>
@@ -204,7 +220,7 @@ function PanelContent({ panel }: { panel: PanelId }) {
     return (
       <div className="contact-panel">
         <SectionTitle eyebrow="05 / Say hello">Let&apos;s connect</SectionTitle>
-        <p className="panel-lead">Have an opportunity, an idea or just want to talk about building something?</p>
+        <p className="panel-lead">Looking for a software engineering intern? I’d like to hear from you.</p>
         <div className="contact-links">
           <a href="mailto:diethekin007@gmail.com"><Mail /><span><small>Email</small>diethekin007@gmail.com</span><ArrowUpRight /></a>
           <a href="tel:+66623198944"><Phone /><span><small>Phone</small>062-319-8944</span><ArrowUpRight /></a>
@@ -230,6 +246,8 @@ export default function Home() {
   const [activePanel, setActivePanel] = useState<PanelId | null>(null);
   const [introDone, setIntroDone] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const returnFocus = useRef<HTMLElement | null>(null);
   const angleRef = useRef(0);
   const targetAngle = useRef(0);
   const interaction = useRef({ dragging: false, x: 0, startX: 0, time: 0, velocity: 0, moved: false, paused: false });
@@ -271,6 +289,12 @@ export default function Home() {
 
   useEffect(() => {
     document.body.style.overflow = activePanel ? 'hidden' : '';
+    const dialog = dialogRef.current;
+    if (activePanel && dialog && !dialog.open) {
+      returnFocus.current = document.activeElement as HTMLElement;
+      dialog.showModal();
+    }
+    if (!activePanel) returnFocus.current?.focus({ preventScroll: true });
     const closeOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') setActivePanel(null); };
     window.addEventListener('keydown', closeOnEscape);
     return () => {
@@ -292,9 +316,9 @@ export default function Home() {
 
       <section className="orbit-hero" id="home">
         <div className="identity-block">
-          <span className="identity-eyebrow">A universe of ideas</span>
+          <span className="identity-eyebrow">Jirayu / Personal portfolio</span>
           <h1>Jirayu<br /><em>Sangobwaja.</em></h1>
-          <p>Developer by curiosity.<br />Creator by nature.</p>
+          <p>Computer Science student.<br />Building interfaces with React & Next.js.</p>
           <button onClick={() => setActivePanel('about')}>Meet the person <ArrowUpRight size={15} /></button>
         </div>
         <div className="hero-kicker"><span>CS Student</span><i /><span>Front-end developer</span></div>
@@ -344,7 +368,6 @@ export default function Home() {
           </div>
           <div className="orbit-menu" aria-label="Portfolio sections">
             {navItems.map((item) => {
-              const Icon = item.icon;
               return (
                 <button className="orbit-item" key={item.id}
                   onPointerEnter={() => { interaction.current.paused = true; }}
@@ -352,7 +375,7 @@ export default function Home() {
                   onFocus={() => { interaction.current.paused = true; }}
                   onBlur={() => { interaction.current.paused = false; }}
                   onClick={() => { if (!interaction.current.moved) setActivePanel(item.id); }}>
-                  <span className="orbit-icon"><Icon /><span className="orbit-number">{String(navItems.indexOf(item) + 1).padStart(2, '0')}</span></span>
+                  <span className="orbit-icon"><OrbitMark section={item.id} /><span className="orbit-number">{String(navItems.indexOf(item) + 1).padStart(2, '0')}</span></span>
                   <span className="orbit-label"><small>{item.eyebrow}</small>{item.label}</span>
                 </button>
               );
@@ -367,19 +390,18 @@ export default function Home() {
       </section>
 
       {activePanel && (
-        <div className="panel-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setActivePanel(null); }}>
-          <section className="content-panel" role="dialog" aria-modal="true" aria-label={`${activePanel} information`}>
-            <div className="panel-glow" aria-hidden="true" />
+        <dialog ref={dialogRef} className="panel-backdrop" aria-label={`${activePanel} information`} onCancel={() => setActivePanel(null)} onClick={(event) => { if (event.target === event.currentTarget) setActivePanel(null); }}>
+          <section className="content-panel">
+            <div className="panel-masthead"><span>JS / PERSONAL ARCHIVE</span><span>{navItems.find(item => item.id === activePanel)?.eyebrow}</span></div>
             <button className="panel-close" onClick={() => setActivePanel(null)} aria-label="Close panel"><X /></button>
             <div className="panel-scroll"><PanelContent panel={activePanel} /></div>
             <nav className="panel-nav" aria-label="Switch section">
               {navItems.map((item) => {
-                const Icon = item.icon;
-                return <button className={activePanel === item.id ? 'active' : ''} key={item.id} onClick={() => setActivePanel(item.id)} aria-label={item.label}><Icon /></button>;
+                return <button className={activePanel === item.id ? 'active' : ''} key={item.id} onClick={() => setActivePanel(item.id)} aria-label={item.label} aria-current={activePanel === item.id ? 'page' : undefined}><OrbitMark section={item.id} /><span>{item.label}</span></button>;
               })}
             </nav>
           </section>
-        </div>
+        </dialog>
       )}
     </main>
   );
