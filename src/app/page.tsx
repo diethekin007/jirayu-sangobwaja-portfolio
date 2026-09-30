@@ -5,7 +5,7 @@ import Image from 'next/image';
 import CosmicScene from './cosmic-scene';
 import {
   ArrowUpRight, BookOpen, BriefcaseBusiness, Code2, Download,
-  GraduationCap, Layers3, Mail, Phone, UserRound, X,
+  GraduationCap, Layers3, Mail, Phone, UserRound, X, ChevronLeft, ChevronRight, Copy, Check,
 } from 'lucide-react';
 import { SiGithub } from 'react-icons/si';
 
@@ -16,6 +16,7 @@ type Project = {
   category: string;
   description: string;
   image: string;
+  gallery: string[];
   href: string;
   stack: string[];
 };
@@ -26,6 +27,7 @@ const projects: Project[] = [
     category: 'Full-stack web application',
     description: 'Task management platform with authentication, CRUD workflows, filters and an analytics dashboard.',
     image: '/assets/project_todolist.png',
+    gallery: ['/assets/project_todolist.png', '/assets/todolist_2.png', '/assets/todolist_3.png'],
     href: 'https://todo-list-jr-tw2h.vercel.app/backoffice/signup',
     stack: ['Next.js', 'TypeScript', 'Node.js', 'PostgreSQL'],
   },
@@ -34,6 +36,7 @@ const projects: Project[] = [
     category: 'Product design & prototyping',
     description: 'Mobile product concepts focused on clear user flows, modern visual systems and high-fidelity prototypes.',
     image: '/assets/figma1.png',
+    gallery: ['/assets/figma1.png', '/assets/figma2.png', '/assets/figma3.png', '/assets/figma4.png'],
     href: 'https://www.figma.com/proto/YDvHALgAEykY68gp7LgpNO/Untitled?node-id=0-1&t=vgn5AZoROApoO0Ya-1',
     stack: ['Figma', 'Wireframes', 'Prototype', 'UI/UX'],
   },
@@ -42,6 +45,7 @@ const projects: Project[] = [
     category: 'Responsive website',
     description: 'A warm, responsive cafe experience with clear menu navigation and a polished visual identity.',
     image: '/assets/cafe1.png',
+    gallery: ['/assets/cafe1.png', '/assets/cafe2.png', '/assets/cafe3.png', '/assets/cafe4.png'],
     href: 'https://jirayu009-website.vercel.app/',
     stack: ['HTML', 'Sass', 'JavaScript', 'Vercel'],
   },
@@ -50,6 +54,7 @@ const projects: Project[] = [
     category: 'Interactive portfolio',
     description: 'A cinematic portfolio experience that turns personal information into an explorable interface.',
     image: '/assets/portfolio-1.png',
+    gallery: ['/assets/portfolio-1.png', '/assets/portfolio-2.png', '/assets/portfolio-3.png'],
     href: 'https://jirayu-sangobwaja.vercel.app/',
     stack: ['Next.js', 'React', 'TypeScript', 'CSS'],
   },
@@ -87,6 +92,43 @@ function SectionTitle({ eyebrow, children }: { eyebrow: string; children: ReactN
   return <div className="panel-title"><span>{eyebrow}</span><h2>{children}</h2></div>;
 }
 
+function ProjectGallery() {
+  const [projectIndex, setProjectIndex] = useState(0);
+  const [imageIndex, setImageIndex] = useState(0);
+  const touchX = useRef<number | null>(null);
+  const project = projects[projectIndex];
+  const step = (direction: number) => setImageIndex(index => (index + direction + project.gallery.length) % project.gallery.length);
+  return <div className="project-observatory">
+    <SectionTitle eyebrow="Selected work">Projects</SectionTitle>
+    <div className="project-selector" aria-label="Choose project">{projects.map((item, index) => <button key={item.title} aria-pressed={index === projectIndex} onClick={() => { setProjectIndex(index); setImageIndex(0); }}>{item.title}</button>)}</div>
+    <div className="project-exhibit">
+      <div className="exhibit-gallery">
+        <div className="exhibit-image" onTouchStart={event => { touchX.current = event.touches[0].clientX; }} onTouchEnd={event => { if(touchX.current !== null) { const distance = event.changedTouches[0].clientX - touchX.current; if(Math.abs(distance) > 40) step(distance < 0 ? 1 : -1); } touchX.current = null; }}>
+          <Image key={project.gallery[imageIndex]} src={project.gallery[imageIndex]} alt={`${project.title}, screenshot ${imageIndex + 1}`} fill sizes="(max-width: 700px) 90vw, 650px" />
+          <div className="gallery-controls"><button aria-label="Previous image" onClick={() => step(-1)}><ChevronLeft /></button><span aria-live="polite">{imageIndex + 1} / {project.gallery.length}</span><button aria-label="Next image" onClick={() => step(1)}><ChevronRight /></button></div>
+        </div>
+        <div className="gallery-thumbnails">{project.gallery.map((src, index) => <button key={src} aria-label={`Show screenshot ${index + 1}`} aria-pressed={index === imageIndex} onClick={() => setImageIndex(index)}><Image src={src} alt="" fill sizes="80px" /></button>)}</div>
+      </div>
+      <div className="exhibit-copy" key={project.title}><span>{project.category}</span><h3>{project.title}</h3><p>{project.description}</p><h4>Built with</h4><div className="tag-row">{project.stack.map(tool => <em key={tool}>{tool}</em>)}</div><a className="cosmic-action" href={project.href} target="_blank" rel="noreferrer">{projectIndex === 1 ? 'Open prototype' : 'Visit website'} <ArrowUpRight size={17} /></a></div>
+    </div>
+  </div>;
+}
+
+function ContactPanel() {
+  const [status, setStatus] = useState('');
+  const copy = async () => {
+    try { await navigator.clipboard.writeText('diethekin007@gmail.com'); setStatus('Email copied'); }
+    catch { setStatus('Copy unavailable. Select the email or use the email link.'); }
+  };
+  return <div className="contact-panel">
+    <SectionTitle eyebrow="Say hello">Let’s connect.</SectionTitle>
+    <p className="panel-lead">Looking for a software engineering intern? I’d like to hear from you.</p>
+    <div className="email-feature"><Mail /><a href="mailto:diethekin007@gmail.com">diethekin007@gmail.com</a><button onClick={copy} aria-label="Copy email address">{status === 'Email copied' ? <Check /> : <Copy />}</button></div>
+    <p className="copy-status" role="status">{status}</p>
+    <div className="contact-links"><a href="tel:+66623198944"><Phone /><span><small>Phone</small>062-319-8944</span><ArrowUpRight /></a><a href="https://github.com/diethekin007" target="_blank" rel="noreferrer"><SiGithub /><span><small>GitHub</small>@diethekin007</span><ArrowUpRight /></a></div>
+  </div>;
+}
+
 function PanelContent({ panel }: { panel: PanelId }) {
   if (panel === 'about') {
     return (
@@ -95,7 +137,8 @@ function PanelContent({ panel }: { panel: PanelId }) {
           <Image src="/assets/about_me.png" alt="Jirayu Sangobwaja" fill sizes="(max-width: 700px) 80vw, 340px" />
         </div>
         <div className="about-copy">
-          <SectionTitle eyebrow="01 / Profile">About me</SectionTitle>
+          <SectionTitle eyebrow="Meet the person">About me</SectionTitle>
+          <h3 className="profile-name">Jirayu Sangobwaja</h3>
           <p className="panel-lead">Computer Science student.<br />Front-end developer in progress.</p>
           <p>I&apos;m Jirayu Sangobwaja, a Computer Science student who enjoys front-end development, interaction design and solving product problems with clean code.</p>
           <p>I&apos;m currently expanding into backend development while looking for a Software Engineering Internship where I can build, learn and collaborate with a real team.</p>
@@ -110,40 +153,20 @@ function PanelContent({ panel }: { panel: PanelId }) {
   }
 
   if (panel === 'projects') {
-    return (
-      <div>
-        <SectionTitle eyebrow="02 / Selected work">Projects</SectionTitle>
-        <div className="project-grid">
-          {projects.map((project, index) => (
-            <article className="project-card" key={project.title}>
-              <div className="project-image">
-                <Image src={project.image} alt={project.title} fill sizes="(max-width: 700px) 90vw, 420px" />
-              </div>
-              <div className="project-copy">
-                <span>{String(index + 1).padStart(2, '0')} / {project.category}</span><h3>{project.title}</h3><p>{project.description}</p>
-                <div className="project-footer">
-                  <div className="tag-row">{project.stack.map((item) => <em key={item}>{item}</em>)}</div>
-                  <a href={project.href} target="_blank" rel="noreferrer" aria-label={`Open ${project.title}`}>View project <ArrowUpRight /></a>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    );
+    return <ProjectGallery />;
   }
 
   if (panel === 'skills') {
     return (
       <div>
-        <SectionTitle eyebrow="03 / Toolbox">Skills & tools</SectionTitle>
+        <SectionTitle eyebrow="My toolkit">Skills & tools</SectionTitle>
         <p className="panel-lead compact">What I build with, and what I’m learning.</p>
         <div className="skill-grid">
-          {skillGroups.map((group, index) => (
+          {skillGroups.map((group) => (
             <section className="skill-group" key={group.title}>
-              <span className="group-index">0{index + 1} / {group.detail}</span>
+              <span className="group-index"><i aria-hidden="true" />{group.detail}</span>
               <h3>{group.title}</h3>
-              <ul>{group.tools.map(tool => <li key={tool}>{tool}</li>)}</ul>
+              <ul>{group.tools.map(tool => <li key={tool}><span aria-hidden="true">✧</span>{tool}</li>)}</ul>
             </section>
           ))}
         </div>
@@ -154,7 +177,7 @@ function PanelContent({ panel }: { panel: PanelId }) {
   if (panel === 'education') {
     return (
       <div>
-        <SectionTitle eyebrow="04 / Journey">Education</SectionTitle>
+        <SectionTitle eyebrow="The journey so far">Education</SectionTitle>
         <div className="timeline">
           <article>
             <span>2023 — Present</span>
@@ -174,22 +197,13 @@ function PanelContent({ panel }: { panel: PanelId }) {
   }
 
   if (panel === 'contact') {
-    return (
-      <div className="contact-panel">
-        <SectionTitle eyebrow="05 / Say hello">Let&apos;s connect</SectionTitle>
-        <p className="panel-lead">Looking for a software engineering intern? I’d like to hear from you.</p>
-        <div className="contact-links">
-          <a href="mailto:diethekin007@gmail.com"><Mail /><span><small>Email</small>diethekin007@gmail.com</span><ArrowUpRight /></a>
-          <a href="tel:+66623198944"><Phone /><span><small>Phone</small>062-319-8944</span><ArrowUpRight /></a>
-          <a href="https://github.com/diethekin007" target="_blank" rel="noreferrer"><SiGithub /><span><small>GitHub</small>@diethekin007</span><ArrowUpRight /></a>
-        </div>
-      </div>
-    );
+    return <ContactPanel />;
   }
 
   return (
     <div className="resume-panel">
-      <SectionTitle eyebrow="06 / Resume">My experience</SectionTitle>
+      <SectionTitle eyebrow="Take a closer look">Resume</SectionTitle>
+      <div className="resume-preview"><iframe src="/RESUME_JIRAYU.pdf#page=1&toolbar=0&navpanes=0" title="Jirayu resume preview" /><p>Preview unavailable? <a href="/RESUME_JIRAYU.pdf" target="_blank" rel="noreferrer">Open the PDF</a></p></div>
       <div className="resume-card">
         <div className="resume-icon"><BookOpen /></div>
         <div><span>Curriculum Vitae · PDF</span><h3>Jirayu Sangobwaja</h3><p>Education, technical skills, selected projects and contact information in one document.</p></div>
@@ -202,12 +216,22 @@ function PanelContent({ panel }: { panel: PanelId }) {
 export default function Home() {
   const [activePanel, setActivePanel] = useState<PanelId | null>(null);
   const [introDone, setIntroDone] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
   const angleRef = useRef(0);
   const targetAngle = useRef(0);
   const interaction = useRef({ dragging: false, x: 0, startX: 0, time: 0, velocity: 0, moved: false, paused: false });
+  const closePanel = () => {
+    if (closeTimer.current) return;
+    setClosing(true);
+    closeTimer.current = setTimeout(() => {
+      setActivePanel(null); setClosing(false); closeTimer.current = null;
+    }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 260);
+  };
+  useEffect(() => () => { if (closeTimer.current) clearTimeout(closeTimer.current); }, []);
 
   useEffect(() => {
     let frame = 0;
@@ -249,19 +273,23 @@ export default function Home() {
     const dialog = dialogRef.current;
     if (activePanel && dialog && !dialog.open) {
       returnFocus.current = document.activeElement as HTMLElement;
+      const source = returnFocus.current?.getBoundingClientRect();
       dialog.showModal();
+      const panel = dialog.querySelector<HTMLElement>('.content-panel');
+      if (panel && source) {
+        const box = panel.getBoundingClientRect();
+        panel.style.setProperty('--open-x', `${source.left + source.width / 2 - box.left}px`);
+        panel.style.setProperty('--open-y', `${source.top + source.height / 2 - box.top}px`);
+      }
     }
     if (!activePanel) returnFocus.current?.focus({ preventScroll: true });
-    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') setActivePanel(null); };
-    window.addEventListener('keydown', closeOnEscape);
     return () => {
       document.body.style.overflow = '';
-      window.removeEventListener('keydown', closeOnEscape);
     };
   }, [activePanel]);
 
   return (
-    <main className={`orbit-page ${introDone ? 'is-ready' : ''}`}>
+    <main className={`orbit-page ${introDone ? 'is-ready' : ''} ${activePanel ? 'panel-open' : ''}`}>
       <CosmicScene paused={Boolean(activePanel)} />
       <div className="nebula nebula-purple" aria-hidden="true" />
       <div className="nebula nebula-blue" aria-hidden="true" />
@@ -361,11 +389,12 @@ export default function Home() {
       </section>
 
       {activePanel && (
-        <dialog ref={dialogRef} className="panel-backdrop" aria-label={`${activePanel} information`} onCancel={() => setActivePanel(null)} onClick={(event) => { if (event.target === event.currentTarget) setActivePanel(null); }}>
-          <section className="content-panel">
-            <div className="panel-masthead"><span>JS / PERSONAL ARCHIVE</span><span>{navItems.find(item => item.id === activePanel)?.eyebrow}</span></div>
-            <button className="panel-close" onClick={() => setActivePanel(null)} aria-label="Close panel"><X /></button>
-            <div className="panel-scroll"><PanelContent panel={activePanel} /></div>
+        <dialog ref={dialogRef} className={`panel-backdrop ${closing ? 'is-closing' : ''}`} aria-label={`${activePanel} information`} onCancel={(event) => { event.preventDefault(); closePanel(); }} onClick={(event) => { if (event.target === event.currentTarget) closePanel(); }}>
+          <section className={`content-panel panel-${activePanel}`}>
+            <div className="panel-atmosphere" aria-hidden="true"><i /><i /><i /></div>
+            <div className="panel-masthead"><span>JIRAYU<span className="masthead-star"> ✧ </span>SANGOBWAJA</span><span>{navItems.find(item => item.id === activePanel)?.eyebrow}</span></div>
+            <button className="panel-close" onClick={closePanel} aria-label="Close panel"><X /></button>
+            <div className="panel-scroll" key={activePanel}><PanelContent panel={activePanel} /></div>
             <nav className="panel-nav" aria-label="Switch section">
               {navItems.map((item) => {
                 return <button className={activePanel === item.id ? 'active' : ''} key={item.id} onClick={() => setActivePanel(item.id)} aria-label={item.label} aria-current={activePanel === item.id ? 'page' : undefined}><OrbitMark section={item.id} /><span>{item.label}</span></button>;
