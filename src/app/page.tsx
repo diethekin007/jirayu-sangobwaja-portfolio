@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode, type CSSProperties } from 'react';
 import Image from 'next/image';
 import CosmicScene from './cosmic-scene';
 import {
@@ -274,7 +274,21 @@ export default function Home() {
       <section className="orbit-hero" id="home">
         <div className="identity-block">
           <span className="identity-eyebrow">Jirayu / Personal portfolio</span>
-          <h1>Jirayu<br /><em>Sangobwaja.</em></h1>
+          <h1 className="animated-name" aria-label="Jirayu Sangobwaja"
+            onPointerMove={(event) => {
+              if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+              const box = event.currentTarget.getBoundingClientRect();
+              event.currentTarget.style.setProperty('--name-x', `${(event.clientX - box.left - box.width / 2) * .018}px`);
+              event.currentTarget.style.setProperty('--name-y', `${(event.clientY - box.top - box.height / 2) * .025}px`);
+            }}
+            onPointerLeave={(event) => {
+              event.currentTarget.style.setProperty('--name-x', '0px');
+              event.currentTarget.style.setProperty('--name-y', '0px');
+            }}>
+            {['Jirayu', 'Sangobwaja.'].map((word, line) => <span className="name-line" aria-hidden="true" key={word}>
+              {Array.from(word).map((letter, index) => <span className="name-letter" key={index} style={{ '--letter-delay': `${(index + line * 6) * 45}ms` } as CSSProperties}>{letter}</span>)}
+            </span>)}
+          </h1>
           <p>Computer Science student.<br />Building interfaces with React & Next.js.</p>
           <button onClick={() => setActivePanel('about')}>Meet the person <ArrowUpRight size={15} /></button>
         </div>

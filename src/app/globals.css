@@ -522,3 +522,17 @@ body { --font-heading: var(--font-space), sans-serif; --font-body: var(--font-in
   .identity-block p br { display: initial; }
 }
 .cosmic-scene { background: radial-gradient(ellipse at 76% 45%, #402267, #0d1025 55%, #050817); }
+
+.animated-name { --name-x: 0px; --name-y: 0px; transform: translate(var(--name-x), var(--name-y)); transition: transform .7s cubic-bezier(.22,1,.36,1); }
+.name-line { display: block; width: max-content; max-width: 100%; animation: nameFloat 8s ease-in-out infinite; }
+.name-line:nth-child(2) { animation-delay: -3s; }
+.name-letter { display: inline-block; color: #f1eafa; animation: letterReveal 1.1s cubic-bezier(.22,1,.36,1) both; animation-delay: calc(.3s + var(--letter-delay)); }
+@supports (background-clip: text) {
+  .name-letter { background: linear-gradient(110deg, #f1eafa 25%, #f1eafa 40%, #be9be7 47%, #fff 51%, #f1eafa 58%, #f1eafa 75%); background-size: 400% 100%; background-clip: text; -webkit-background-clip: text; color: transparent; animation: letterReveal 1.1s cubic-bezier(.22,1,.36,1) both, nameShimmer 10s ease-in-out infinite; animation-delay: calc(.3s + var(--letter-delay)), var(--letter-delay); }
+}
+.name-letter:hover { text-shadow: 0 0 20px #d6b4ff88; }
+@keyframes letterReveal { from { opacity: 0; transform: translateY(24px) rotate(3deg); filter: blur(8px); } to { opacity: 1; transform: translateY(0) rotate(0); filter: blur(0); } }
+@keyframes nameShimmer { 0%, 25% { background-position: 100% 50%; } 60%, 100% { background-position: 0% 50%; } }
+@keyframes nameFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@media (max-width: 700px) { .name-line { margin-inline: auto; } }
+@media (prefers-reduced-motion: reduce) { .animated-name { transform: none; } .name-letter { color: #f1eafa; background: none; opacity: 1; filter: none; transform: none; } }

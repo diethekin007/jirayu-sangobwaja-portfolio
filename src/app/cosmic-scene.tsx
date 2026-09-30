@@ -119,6 +119,32 @@ export default function CosmicScene({ paused }: { paused: boolean }) {
             context.beginPath(); context.moveTo(x-size,y); context.lineTo(x+size,y); context.moveTo(x,y-size); context.lineTo(x,y+size); context.stroke();
           }
         });
+        // Slow falling dust fills the reading side; meteor trails appear separately.
+        const leftWidth = width * (width < 700 ? .9 : .46);
+        for (let i = 0; i < (width < 700 ? 40 : 100); i++) {
+          const depth = .3 + (i % 7) / 10;
+          const x = ((i * 79.7 + Math.sin(seconds * .2 + i) * 12) % leftWidth + leftWidth) % leftWidth;
+          const y = ((i * 137.3 + seconds * (10 + depth * 20)) % (height + 30)) - 15;
+          const opacity = .12 + depth * .22;
+          context.fillStyle = `rgba(211,184,255,${opacity})`;
+          context.beginPath(); context.arc(x, y, .5 + depth, 0, Math.PI * 2); context.fill();
+        }
+        if (!motion.matches) for (let i = 0; i < 4; i++) {
+          const cycle = 7.3 + i * 1.9;
+          const progress = ((seconds + i * 2.7) % cycle) / 2.3;
+          if (progress > 1) continue;
+          const x = leftWidth * (.18 + i * .19) + progress * 100;
+          const y = -70 + progress * height * .92;
+          const opacity = Math.sin(progress * Math.PI) * .7;
+          const tail = 60 + i * 14;
+          const trail = context.createLinearGradient(x - tail * .3, y - tail, x, y);
+          trail.addColorStop(0, 'rgba(176,142,255,0)');
+          trail.addColorStop(1, `rgba(230,213,255,${opacity})`);
+          context.strokeStyle = trail; context.lineWidth = 1;
+          context.beginPath(); context.moveTo(x - tail * .3,y - tail); context.lineTo(x,y); context.stroke();
+          context.fillStyle = `rgba(255,243,255,${opacity})`;
+          context.beginPath(); context.arc(x,y,1.5,0,Math.PI*2); context.fill();
+        }
         const mobile = width < 700;
         const cx = width * (mobile ? .5 : .71), cy = height * (mobile ? .63 : .55);
         const radius = Math.min(width * (mobile ? .44 : .26), 410);
