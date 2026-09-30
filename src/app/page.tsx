@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import Image from 'next/image';
+import CosmicScene from './cosmic-scene';
 import {
   ArrowUpRight, BookOpen, BriefcaseBusiness, Code2, Download,
   GraduationCap, Layers3, Mail, Phone, UserRound, X,
@@ -84,50 +85,6 @@ const navItems: Array<{ id: PanelId; label: string; eyebrow: string; icon: typeo
 
 function SectionTitle({ eyebrow, children }: { eyebrow: string; children: ReactNode }) {
   return <div className="panel-title"><span>{eyebrow}</span><h2>{children}</h2></div>;
-}
-
-function GalaxyField() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const context = canvas.getContext('2d');
-    if (!context) return;
-    let frame = 0;
-    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let stars: Array<{ x: number; y: number; radius: number; phase: number }> = [];
-    const resize = () => {
-      const ratio = Math.min(window.devicePixelRatio, 2);
-      canvas.width = window.innerWidth * ratio;
-      canvas.height = window.innerHeight * ratio;
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      stars = Array.from({ length: window.innerWidth < 700 ? 180 : 440 }, () => ({
-        x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight,
-        radius: Math.random() * 1.25 + .2, phase: Math.random() * Math.PI * 2,
-      }));
-    };
-    const draw = (time: number) => {
-      context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      stars.forEach((star, index) => {
-        const alpha = .3 + .35 * (1 + Math.sin((motion.matches ? 0 : time * .0005) + star.phase));
-        context.fillStyle = index % 3 === 0 ? 'rgba(180,160,255,' + alpha + ')' : 'rgba(232,238,255,' + alpha + ')';
-        context.beginPath();
-        context.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        context.fill();
-        if (star.radius > 1.35) {
-          context.fillStyle = 'rgba(210,195,255,.15)';
-          context.fillRect(star.x - 5, star.y - .4, 10, .8);
-          context.fillRect(star.x - .4, star.y - 5, .8, 10);
-        }
-      });
-      frame = requestAnimationFrame(draw);
-    };
-    resize();
-    frame = requestAnimationFrame(draw);
-    window.addEventListener('resize', resize);
-    return () => { cancelAnimationFrame(frame); window.removeEventListener('resize', resize); };
-  }, []);
-  return <canvas ref={canvasRef} className="galaxy-canvas" aria-hidden="true" />;
 }
 
 function PanelContent({ panel }: { panel: PanelId }) {
@@ -305,7 +262,7 @@ export default function Home() {
 
   return (
     <main className={`orbit-page ${introDone ? 'is-ready' : ''}`}>
-      <GalaxyField />
+      <CosmicScene paused={Boolean(activePanel)} />
       <div className="nebula nebula-purple" aria-hidden="true" />
       <div className="nebula nebula-blue" aria-hidden="true" />
       <div className="galaxy-dust" aria-hidden="true" />
@@ -406,3 +363,4 @@ export default function Home() {
     </main>
   );
 }
+
