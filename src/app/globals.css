@@ -280,7 +280,10 @@ button { color: inherit; }
   transform: none;
   touch-action: pan-y;
   cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
 }
+.orbit-stage img { -webkit-user-drag: none; user-select: none; }
 .orbit-stage:active { cursor: grabbing; }
 .orbit-menu { display: contents; animation: none; }
 .orbit-item {

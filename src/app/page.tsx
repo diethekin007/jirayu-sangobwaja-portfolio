@@ -231,7 +231,8 @@ export default function Home() {
   const [introDone, setIntroDone] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
   const angleRef = useRef(0);
-  const interaction = useRef({ dragging: false, x: 0, moved: false, paused: false });
+  const targetAngle = useRef(0);
+  const interaction = useRef({ dragging: false, x: 0, startX: 0, time: 0, velocity: 0, moved: false, paused: false });
 
   useEffect(() => {
     let frame = 0;
@@ -241,8 +242,10 @@ export default function Home() {
       const elapsed = previous ? Math.min(time - previous, 40) : 0;
       previous = time;
       if (!activePanel && !interaction.current.dragging && !interaction.current.paused && !reducedMotion.matches && !document.hidden) {
-        angleRef.current += elapsed * 0.00015;
+        targetAngle.current += elapsed * (0.00015 + interaction.current.velocity);
+        interaction.current.velocity *= Math.exp(-elapsed / 280);
       }
+      angleRef.current += (targetAngle.current - angleRef.current) * (1 - Math.exp(-elapsed / 65));
       const stage = stageRef.current;
       if (stage) {
         const radius = Math.min(stage.clientWidth * 0.43, 320);
@@ -298,20 +301,37 @@ export default function Home() {
         <p className="hero-index">Portfolio / 2026</p>
         <div className="orbit-stage" ref={stageRef}
           onPointerDown={(event) => {
+            if (!event.isPrimary || event.button !== 0) return;
             interaction.current.dragging = true;
             interaction.current.moved = false;
             interaction.current.x = event.clientX;
+            interaction.current.startX = event.clientX;
+            interaction.current.time = event.timeStamp;
+            interaction.current.velocity = 0;
           }}
           onPointerMove={(event) => {
             if (!interaction.current.dragging) return;
             const distance = event.clientX - interaction.current.x;
-            if (Math.abs(distance) > 2) interaction.current.moved = true;
-            angleRef.current += distance * 0.009;
+            if (Math.abs(event.clientX - interaction.current.startX) > 5) {
+              interaction.current.moved = true;
+              event.currentTarget.setPointerCapture(event.pointerId);
+            }
+            const delta = distance * 0.005;
+            targetAngle.current += delta;
+            const elapsed = Math.max(8, event.timeStamp - interaction.current.time);
+            interaction.current.velocity = interaction.current.velocity * .5 + Math.max(-.003, Math.min(.003, delta / elapsed)) * .5;
             interaction.current.x = event.clientX;
+            interaction.current.time = event.timeStamp;
           }}
-          onPointerUp={() => { interaction.current.dragging = false; }}
-          onPointerCancel={() => { interaction.current.dragging = false; }}
-          onPointerLeave={() => { interaction.current.dragging = false; interaction.current.paused = false; }}>
+          onPointerUp={(event) => {
+            interaction.current.dragging = false;
+            interaction.current.paused = false;
+            if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+          }}
+          onPointerCancel={() => { interaction.current.dragging = false; interaction.current.velocity = 0; }}
+          onLostPointerCapture={() => { interaction.current.dragging = false; }}
+          onPointerLeave={() => { interaction.current.paused = false; }}
+          onDragStart={(event) => event.preventDefault()}>
           <div className="orbit-halo halo-one" aria-hidden="true" />
           <div className="orbit-halo halo-two" aria-hidden="true" />
           <div className="orbit-halo halo-three" aria-hidden="true" />
@@ -320,7 +340,7 @@ export default function Home() {
           <div className="stellar-ribbon ribbon-one" aria-hidden="true" />
           <div className="stellar-ribbon ribbon-two" aria-hidden="true" />
           <div className="hero-portrait">
-            <Image src="/assets/hero_portrait_v2.png" alt="Jirayu Sangobwaja" fill priority sizes="(max-width: 700px) 84vw, 520px" />
+            <Image src="/assets/hero_portrait_v2.png" alt="Jirayu Sangobwaja" draggable={false} fill priority sizes="(max-width: 700px) 84vw, 520px" />
           </div>
           <div className="orbit-menu" aria-label="Portfolio sections">
             {navItems.map((item) => {
