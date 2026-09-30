@@ -72,6 +72,50 @@ function SectionTitle({ eyebrow, children }: { eyebrow: string; children: ReactN
   return <div className="panel-title"><span>{eyebrow}</span><h2>{children}</h2></div>;
 }
 
+function GalaxyField() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext('2d');
+    if (!context) return;
+    let frame = 0;
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let stars: Array<{ x: number; y: number; radius: number; phase: number }> = [];
+    const resize = () => {
+      const ratio = Math.min(window.devicePixelRatio, 2);
+      canvas.width = window.innerWidth * ratio;
+      canvas.height = window.innerHeight * ratio;
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      stars = Array.from({ length: window.innerWidth < 700 ? 180 : 440 }, () => ({
+        x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight,
+        radius: Math.random() * 1.25 + .2, phase: Math.random() * Math.PI * 2,
+      }));
+    };
+    const draw = (time: number) => {
+      context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      stars.forEach((star, index) => {
+        const alpha = .3 + .35 * (1 + Math.sin((motion.matches ? 0 : time * .0005) + star.phase));
+        context.fillStyle = index % 3 === 0 ? 'rgba(180,160,255,' + alpha + ')' : 'rgba(232,238,255,' + alpha + ')';
+        context.beginPath();
+        context.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        context.fill();
+        if (star.radius > 1.35) {
+          context.fillStyle = 'rgba(210,195,255,.15)';
+          context.fillRect(star.x - 5, star.y - .4, 10, .8);
+          context.fillRect(star.x - .4, star.y - 5, .8, 10);
+        }
+      });
+      frame = requestAnimationFrame(draw);
+    };
+    resize();
+    frame = requestAnimationFrame(draw);
+    window.addEventListener('resize', resize);
+    return () => { cancelAnimationFrame(frame); window.removeEventListener('resize', resize); };
+  }, []);
+  return <canvas ref={canvasRef} className="galaxy-canvas" aria-hidden="true" />;
+}
+
 function PanelContent({ panel }: { panel: PanelId }) {
   if (panel === 'about') {
     return (
@@ -201,12 +245,12 @@ export default function Home() {
       }
       const stage = stageRef.current;
       if (stage) {
-        const radius = Math.min(stage.clientWidth * 0.41, 310);
+        const radius = Math.min(stage.clientWidth * 0.43, 320);
         stage.querySelectorAll<HTMLElement>('.orbit-item').forEach((item, index) => {
           const angle = angleRef.current + index * Math.PI / 3;
           const x = Math.cos(angle) * radius;
-          const z = Math.sin(angle) * radius * 0.68;
-          const y = -Math.sin(angle) * radius * 0.3;
+          const z = Math.sin(angle) * radius * 0.55;
+          const y = Math.sin(angle) * radius * 0.58 - Math.cos(angle) * radius * 0.22;
           item.style.transform = 'translate(-50%, -50%) translate3d(' + x + 'px,' + y + 'px,' + z + 'px)';
           item.style.opacity = String(0.64 + (Math.sin(angle) + 1) * 0.18);
         });
@@ -234,7 +278,7 @@ export default function Home() {
 
   return (
     <main className={`orbit-page ${introDone ? 'is-ready' : ''}`}>
-      <div className="space-field" aria-hidden="true"><i /><i /><i /><i /></div>
+      <GalaxyField />
       <div className="nebula nebula-purple" aria-hidden="true" />
       <div className="nebula nebula-blue" aria-hidden="true" />
       <div className="galaxy-dust" aria-hidden="true" />
@@ -244,6 +288,12 @@ export default function Home() {
       </header>
 
       <section className="orbit-hero" id="home">
+        <div className="identity-block">
+          <span className="identity-eyebrow">A universe of ideas</span>
+          <h1>Jirayu<br /><em>Sangobwaja.</em></h1>
+          <p>Developer by curiosity.<br />Creator by nature.</p>
+          <button onClick={() => setActivePanel('about')}>Meet the person <ArrowUpRight size={15} /></button>
+        </div>
         <div className="hero-kicker"><span>CS Student</span><i /><span>Front-end developer</span></div>
         <p className="hero-index">Portfolio / 2026</p>
         <div className="orbit-stage" ref={stageRef}
@@ -266,7 +316,9 @@ export default function Home() {
           <div className="orbit-halo halo-two" aria-hidden="true" />
           <div className="orbit-halo halo-three" aria-hidden="true" />
           <div className="orbit-core" aria-hidden="true" />
-          <div className="hero-name" aria-hidden="true"><span>JIRAYU</span><span>SANGOBWAJA</span></div>
+          <div className="stellar-aura" aria-hidden="true" />
+          <div className="stellar-ribbon ribbon-one" aria-hidden="true" />
+          <div className="stellar-ribbon ribbon-two" aria-hidden="true" />
           <div className="hero-portrait">
             <Image src="/assets/hero_portrait_v2.png" alt="Jirayu Sangobwaja" fill priority sizes="(max-width: 700px) 84vw, 520px" />
           </div>
@@ -280,7 +332,7 @@ export default function Home() {
                   onFocus={() => { interaction.current.paused = true; }}
                   onBlur={() => { interaction.current.paused = false; }}
                   onClick={() => { if (!interaction.current.moved) setActivePanel(item.id); }}>
-                  <span className="orbit-icon"><Icon /></span>
+                  <span className="orbit-icon"><Icon /><span className="orbit-number">{String(navItems.indexOf(item) + 1).padStart(2, '0')}</span></span>
                   <span className="orbit-label"><small>{item.eyebrow}</small>{item.label}</span>
                 </button>
               );
