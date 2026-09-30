@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import Image from 'next/image';
 import {
   ArrowUpRight, BookOpen, BriefcaseBusiness, Code2, Download,
@@ -185,6 +185,37 @@ function PanelContent({ panel }: { panel: PanelId }) {
 export default function Home() {
   const [activePanel, setActivePanel] = useState<PanelId | null>(null);
   const [introDone, setIntroDone] = useState(false);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const angleRef = useRef(0);
+  const interaction = useRef({ dragging: false, x: 0, moved: false, paused: false });
+
+  useEffect(() => {
+    let frame = 0;
+    let previous = 0;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const animate = (time: number) => {
+      const elapsed = previous ? Math.min(time - previous, 40) : 0;
+      previous = time;
+      if (!activePanel && !interaction.current.dragging && !interaction.current.paused && !reducedMotion.matches && !document.hidden) {
+        angleRef.current += elapsed * 0.00015;
+      }
+      const stage = stageRef.current;
+      if (stage) {
+        const radius = Math.min(stage.clientWidth * 0.41, 310);
+        stage.querySelectorAll<HTMLElement>('.orbit-item').forEach((item, index) => {
+          const angle = angleRef.current + index * Math.PI / 3;
+          const x = Math.cos(angle) * radius;
+          const z = Math.sin(angle) * radius * 0.68;
+          const y = -Math.sin(angle) * radius * 0.3;
+          item.style.transform = 'translate(-50%, -50%) translate3d(' + x + 'px,' + y + 'px,' + z + 'px)';
+          item.style.opacity = String(0.64 + (Math.sin(angle) + 1) * 0.18);
+        });
+      }
+      frame = requestAnimationFrame(animate);
+    };
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, [activePanel]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIntroDone(true), 650);
@@ -204,6 +235,9 @@ export default function Home() {
   return (
     <main className={`orbit-page ${introDone ? 'is-ready' : ''}`}>
       <div className="space-field" aria-hidden="true"><i /><i /><i /><i /></div>
+      <div className="nebula nebula-purple" aria-hidden="true" />
+      <div className="nebula nebula-blue" aria-hidden="true" />
+      <div className="galaxy-dust" aria-hidden="true" />
       <header className="orbit-header">
         <a className="brand" href="#home" aria-label="Jirayu home">JIRAYU<span>.</span>S</a>
         <div className="availability"><i /> Open for internship</div>
@@ -212,7 +246,22 @@ export default function Home() {
       <section className="orbit-hero" id="home">
         <div className="hero-kicker"><span>CS Student</span><i /><span>Front-end developer</span></div>
         <p className="hero-index">Portfolio / 2026</p>
-        <div className="orbit-stage">
+        <div className="orbit-stage" ref={stageRef}
+          onPointerDown={(event) => {
+            interaction.current.dragging = true;
+            interaction.current.moved = false;
+            interaction.current.x = event.clientX;
+          }}
+          onPointerMove={(event) => {
+            if (!interaction.current.dragging) return;
+            const distance = event.clientX - interaction.current.x;
+            if (Math.abs(distance) > 2) interaction.current.moved = true;
+            angleRef.current += distance * 0.009;
+            interaction.current.x = event.clientX;
+          }}
+          onPointerUp={() => { interaction.current.dragging = false; }}
+          onPointerCancel={() => { interaction.current.dragging = false; }}
+          onPointerLeave={() => { interaction.current.dragging = false; interaction.current.paused = false; }}>
           <div className="orbit-halo halo-one" aria-hidden="true" />
           <div className="orbit-halo halo-two" aria-hidden="true" />
           <div className="orbit-halo halo-three" aria-hidden="true" />
@@ -222,11 +271,15 @@ export default function Home() {
             <Image src="/assets/hero_portrait_v2.png" alt="Jirayu Sangobwaja" fill priority sizes="(max-width: 700px) 84vw, 520px" />
           </div>
           <div className="orbit-menu" aria-label="Portfolio sections">
-            {navItems.map((item, index) => {
+            {navItems.map((item) => {
               const Icon = item.icon;
-              const style = { '--angle': `${item.angle}deg`, '--delay': `${index * -1.4}s` } as CSSProperties;
               return (
-                <button className="orbit-item" style={style} key={item.id} onClick={() => setActivePanel(item.id)}>
+                <button className="orbit-item" key={item.id}
+                  onPointerEnter={() => { interaction.current.paused = true; }}
+                  onPointerLeave={() => { interaction.current.paused = false; }}
+                  onFocus={() => { interaction.current.paused = true; }}
+                  onBlur={() => { interaction.current.paused = false; }}
+                  onClick={() => { if (!interaction.current.moved) setActivePanel(item.id); }}>
                   <span className="orbit-icon"><Icon /></span>
                   <span className="orbit-label"><small>{item.eyebrow}</small>{item.label}</span>
                 </button>
@@ -237,7 +290,7 @@ export default function Home() {
         <div className="hero-footer">
           <p>I build clear, thoughtful web experiences with code and design.</p>
           <button onClick={() => setActivePanel('projects')}><Layers3 /> Explore selected work</button>
-          <span>Choose an orbit</span>
+          <span>Drag to rotate · Select to explore</span>
         </div>
       </section>
 
