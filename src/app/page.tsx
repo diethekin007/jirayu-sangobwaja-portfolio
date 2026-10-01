@@ -236,8 +236,14 @@ export default function Home() {
   useEffect(() => () => { if (closeTimer.current) clearTimeout(closeTimer.current); }, []);
 
   useEffect(() => {
+    if (activePanel) return;
     let frame = 0;
     let previous = 0;
+    const stage = stageRef.current;
+    const items = stage ? Array.from(stage.querySelectorAll<HTMLElement>('.orbit-item')) : [];
+    let radius = Math.min((stage?.clientWidth ?? 0) * 0.43, 320);
+    const observer = new ResizeObserver(() => { radius = Math.min((stage?.clientWidth ?? 0) * 0.43, 320); });
+    if (stage) observer.observe(stage);
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const animate = (time: number) => {
       const elapsed = previous ? Math.min(time - previous, 40) : 0;
@@ -247,10 +253,8 @@ export default function Home() {
         interaction.current.velocity *= Math.exp(-elapsed / 280);
       }
       angleRef.current += (targetAngle.current - angleRef.current) * (1 - Math.exp(-elapsed / 65));
-      const stage = stageRef.current;
       if (stage) {
-        const radius = Math.min(stage.clientWidth * 0.43, 320);
-        stage.querySelectorAll<HTMLElement>('.orbit-item').forEach((item, index) => {
+        items.forEach((item, index) => {
           const angle = angleRef.current + index * Math.PI / 3;
           const x = Math.cos(angle) * radius;
           const z = Math.sin(angle) * radius * 0.55;
@@ -262,7 +266,7 @@ export default function Home() {
       frame = requestAnimationFrame(animate);
     };
     frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
+    return () => { cancelAnimationFrame(frame); observer.disconnect(); };
   }, [activePanel]);
 
   useEffect(() => {
@@ -292,7 +296,7 @@ export default function Home() {
 
   return (
     <main className={`orbit-page ${introDone ? 'is-ready' : ''} ${activePanel ? 'panel-open' : ''}`}>
-      <CosmicScene paused={closing} />
+      <CosmicScene paused={Boolean(activePanel)} />
       <div className="nebula nebula-purple" aria-hidden="true" />
       <div className="nebula nebula-blue" aria-hidden="true" />
       <div className="galaxy-dust" aria-hidden="true" />

@@ -84,7 +84,7 @@
 .resume-card h3 { font: 400 42px/1.1 var(--font-archive),Georgia,serif; color: #ede6d7; }
 .resume-icon { display: none; }
 .resume-card > a { background: transparent; border-radius: 0; border: 0; border-bottom: 1px solid #c8c2ae77; padding-inline: 0; }
-.panel-open .orbit-hero { filter: blur(5px) brightness(.3); }
+.panel-open .orbit-hero { filter: brightness(.3); }
 .is-closing .content-panel { animation: archiveExit .26s ease both; }
 @keyframes archiveEnter { from { opacity: 0; transform: translateX(25px); } to { opacity: 1; transform: none; } }
 @keyframes archivePage { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }

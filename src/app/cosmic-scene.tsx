@@ -77,7 +77,8 @@ export default function CosmicScene({ paused }: { paused: boolean }) {
     }
     const resolution = gl && program ? gl.getUniformLocation(program, 'resolution') : null;
     const clock = gl && program ? gl.getUniformLocation(program, 'time') : null;
-    let width = 0, height = 0, elapsed = 0, previous = 0, frame = 0;
+    let width = 0, height = 0, elapsed = 0, previous = 0, frame = 0, lastCloud = -Infinity;
+    let needsPaint = true;
     let stars: Array<{ x: number; y: number; r: number; depth: number; phase: number }> = [];
     let dust: Array<{ angle: number; spread: number; phase: number; r: number }> = [];
     const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
@@ -88,7 +89,10 @@ export default function CosmicScene({ paused }: { paused: boolean }) {
       const ratio = Math.min(devicePixelRatio, 1.5);
       canvas.width = width * ratio; canvas.height = height * ratio;
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      cloud.width = Math.round(width * .65); cloud.height = Math.round(height * .65);
+      // Clouds are soft: cap their pixel count instead of shading a large display at full scale.
+      const cloudScale = Math.min(width < 700 ? .4 : .45, 960 / width);
+      cloud.width = Math.max(1, Math.round(width * cloudScale)); cloud.height = Math.max(1, Math.round(height * cloudScale));
+      needsPaint = true;
       if (gl) gl.viewport(0, 0, cloud.width, cloud.height);
       // Seeded placement prevents a resize from replacing the entire sky.
       let seed = 19;
@@ -102,6 +106,9 @@ export default function CosmicScene({ paused }: { paused: boolean }) {
       if (previous && now - previous < 32) { frame = requestAnimationFrame(draw); return; }
       const dt = previous ? Math.min(now - previous, 50) : 0;
       previous = now;
+      if (document.hidden || ((pausedRef.current || motion.matches) && !needsPaint)) {
+        frame = requestAnimationFrame(draw); return;
+      }
       if (!pausedRef.current && !document.hidden && !motion.matches) elapsed += dt;
       if (!document.hidden) {
         const seconds = elapsed / 1000;
@@ -109,9 +116,11 @@ export default function CosmicScene({ paused }: { paused: boolean }) {
           pointer.x += (pointer.tx - pointer.x) * .05;
           pointer.y += (pointer.ty - pointer.y) * .05;
         }
-        if (gl && program) {
+        // Cloud movement is very slow; stars retain their separate 30fps cadence.
+        if (gl && program && (needsPaint || now - lastCloud >= 66)) {
           gl.uniform2f(resolution, cloud.width, cloud.height);
           gl.uniform1f(clock, seconds); gl.drawArrays(gl.TRIANGLES, 0, 6);
+          lastCloud = now;
         }
         context.clearRect(0, 0, width, height);
         stars.forEach((star, index) => {
@@ -187,6 +196,7 @@ export default function CosmicScene({ paused }: { paused: boolean }) {
           context.fillStyle=glow; context.fillRect(x-18,y-18,36,36);
         }
         context.restore();
+        needsPaint = false;
       }
       frame = requestAnimationFrame(draw);
     };
