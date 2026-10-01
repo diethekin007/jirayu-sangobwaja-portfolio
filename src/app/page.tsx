@@ -234,8 +234,17 @@ export default function Home() {
     let previous = 0;
     const stage = stageRef.current;
     const items = stage ? Array.from(stage.querySelectorAll<HTMLElement>('.orbit-item')) : [];
-    let radius = Math.min((stage?.clientWidth ?? 0) * 0.43, 320);
-    const observer = new ResizeObserver(() => { radius = Math.min((stage?.clientWidth ?? 0) * 0.43, 320); });
+    let radius = 0;
+    let depth = 0.55;
+    const measureOrbit = () => {
+      const mobile = window.matchMedia('(max-width: 700px)').matches;
+      const width = stage?.clientWidth ?? 0;
+      // Reserve room for the touch target, label and perspective at both edges.
+      radius = mobile ? Math.max(0, Math.min(width * 0.36, width / 2 - 42)) : Math.min(width * 0.43, 320);
+      depth = mobile ? 0.18 : 0.55;
+    };
+    measureOrbit();
+    const observer = new ResizeObserver(measureOrbit);
     if (stage) observer.observe(stage);
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const animate = (time: number) => {
@@ -250,7 +259,7 @@ export default function Home() {
         items.forEach((item, index) => {
           const angle = angleRef.current + index * Math.PI / 3;
           const x = Math.cos(angle) * radius;
-          const z = Math.sin(angle) * radius * 0.55;
+          const z = Math.sin(angle) * radius * depth;
           const y = Math.sin(angle) * radius * 0.58 - Math.cos(angle) * radius * 0.22;
           item.style.transform = 'translate(-50%, -50%) translate3d(' + x + 'px,' + y + 'px,' + z + 'px)';
           item.style.opacity = String(0.64 + (Math.sin(angle) + 1) * 0.18);

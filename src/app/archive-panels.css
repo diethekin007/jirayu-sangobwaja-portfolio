@@ -157,3 +157,45 @@
 @media(prefers-reduced-motion:reduce) {
   .content-panel,.panel-scroll,.is-closing .content-panel { animation: none; transform: none; }
 }
+
+/* Phone composition: keep the orbital controls inside the screen. */
+@media (max-width: 700px) {
+  .orbit-header { padding-inline: 20px; height: 62px; }
+  .brand { font-size: 14px; }
+  .availability { font-size: 9px; gap: 7px; letter-spacing: 0; }
+  .orbit-hero { min-height: calc(100svh - 62px); padding: 40px 12px 22px; gap: 0; }
+  .hero-kicker { left: 20px; font-size: 8px; letter-spacing: .03em; gap: 8px; }
+  .hero-kicker i { width: 22px; }
+  .hero-index { right: 20px; font-size: 8px; letter-spacing: 0; }
+  .identity-block { width: 100%; margin: 6px 0 0; }
+  .identity-eyebrow { font-size: 10px; }
+  .identity-block h1 { font-size: clamp(30px, 9vw, 48px); line-height: 1.12; margin: 12px 0; }
+  .identity-block p { font-size: 11px; line-height: 1.65; }
+  .animated-name { transform: none; }
+  .orbit-stage { flex-shrink: 0; width: 100%; height: clamp(330px, 100vw, 480px); margin: 16px 0 0; perspective: 1000px; }
+  .hero-portrait { width: 67%; height: 92%; bottom: 3%; }
+  .stellar-ribbon { width: 80%; }
+  .orbit-item { width: 56px; height: 56px; top: 59%; display: grid; place-items: center; }
+  .orbit-icon { width: 46px; height: 46px; }
+  .orbit-icon .section-glyph { width: 24px; height: 24px; }
+  .orbit-label { font-size: 10px; letter-spacing: 0; white-space: nowrap; top: calc(100% + 5px); }
+  .hero-footer { position: relative; inset: auto; margin: 16px 0 0; padding-bottom: env(safe-area-inset-bottom); }
+  .hero-footer button { min-height: 44px; }
+  .content-panel { height: 100dvh; max-height: 100dvh; grid-template-rows: 60px minmax(0,1fr) calc(76px + env(safe-area-inset-bottom)); }
+  .panel-scroll { min-width: 0; overscroll-behavior: contain; }
+  .panel-nav button { min-height: 48px; }
+  .panel-nav { padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
+  .profile-name { font-size: clamp(46px, 14vw, 78px); overflow-wrap: anywhere; }
+  .contact-links a { gap: 10px; grid-template-columns: 28px minmax(0,1fr) auto; }
+  .contact-links a span { overflow-wrap: anywhere; }
+  .gallery-controls button { width: 44px; height: 44px; }
+}
+@media (max-width: 360px) {
+  .orbit-header { padding-inline: 16px; }
+  .availability { font-size: 8px; }
+  .panel-scroll { padding-inline: 18px; }
+  .panel-nav button { font-size: 8px; }
+}
+@media (max-width: 360px) {
+  .project-selector { margin-inline: -18px; padding-inline: 18px; }
+}
