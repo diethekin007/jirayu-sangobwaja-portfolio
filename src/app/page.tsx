@@ -134,11 +134,13 @@ function PanelContent({ panel }: { panel: PanelId }) {
     return (
       <div className="about-layout">
         <div className="about-portrait">
+          <svg className="portrait-chart" viewBox="0 0 400 500" fill="none" aria-hidden="true"><path d="M200 15v25 M200 460v25 M15 250h25 M360 250h25" /><ellipse cx="200" cy="250" rx="165" ry="215" /><ellipse cx="200" cy="250" rx="145" ry="195" strokeDasharray="1 12" /><path d="m200 26 7 15-7 15-7-15Z M54 250l10-7 10 7-10 7Z M326 250l10-7 10 7-10 7Z" /><path d="M85 88 315 412 M315 88 85 412" strokeDasharray="2 18" /></svg>
           <Image src="/assets/about_me.png" alt="Jirayu Sangobwaja" fill sizes="(max-width: 700px) 80vw, 340px" />
+          <span className="portrait-caption">Jirayu Sangobwaja · Computer Science</span>
         </div>
         <div className="about-copy">
           <SectionTitle eyebrow="Meet the person">About me</SectionTitle>
-          <h3 className="profile-name">Jirayu Sangobwaja</h3>
+          <h3 className="profile-name">Jirayu<br /><em>Sangobwaja.</em></h3>
           <p className="panel-lead">Computer Science student.<br />Front-end developer in progress.</p>
           <p>I&apos;m Jirayu Sangobwaja, a Computer Science student who enjoys front-end development, interaction design and solving product problems with clean code.</p>
           <p>I&apos;m currently expanding into backend development while looking for a Software Engineering Internship where I can build, learn and collaborate with a real team.</p>
@@ -290,7 +292,7 @@ export default function Home() {
 
   return (
     <main className={`orbit-page ${introDone ? 'is-ready' : ''} ${activePanel ? 'panel-open' : ''}`}>
-      <CosmicScene paused={Boolean(activePanel)} />
+      <CosmicScene paused={closing} />
       <div className="nebula nebula-purple" aria-hidden="true" />
       <div className="nebula nebula-blue" aria-hidden="true" />
       <div className="galaxy-dust" aria-hidden="true" />
@@ -392,7 +394,7 @@ export default function Home() {
         <dialog ref={dialogRef} className={`panel-backdrop ${closing ? 'is-closing' : ''}`} aria-label={`${activePanel} information`} onCancel={(event) => { event.preventDefault(); closePanel(); }} onClick={(event) => { if (event.target === event.currentTarget) closePanel(); }}>
           <section className={`content-panel panel-${activePanel}`}>
             <div className="panel-atmosphere" aria-hidden="true"><i /><i /><i /></div>
-            <div className="panel-masthead"><span>JIRAYU<span className="masthead-star"> ✧ </span>SANGOBWAJA</span><span>{navItems.find(item => item.id === activePanel)?.eyebrow}</span></div>
+            <div className="panel-masthead"><span>JIRAYU<span className="masthead-star"> / </span>PERSONAL ARCHIVE</span><span>{navItems.find(item => item.id === activePanel)?.eyebrow}</span></div>
             <button className="panel-close" onClick={closePanel} aria-label="Close panel"><X /></button>
             <div className="panel-scroll" key={activePanel}><PanelContent panel={activePanel} /></div>
             <nav className="panel-nav" aria-label="Switch section">

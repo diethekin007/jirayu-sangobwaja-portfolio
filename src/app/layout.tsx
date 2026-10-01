@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, IBM_Plex_Mono, Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
+import "./archive-panels.css";
+
+const archive = localFont({ src: [
+  { path: "../../public/fonts/Cormorant-Regular.ttf", weight: "300 700", style: "normal" },
+  { path: "../../public/fonts/Cormorant-Italic.ttf", weight: "300 700", style: "italic" },
+], variable: "--font-archive", display: "swap" });
 
 const space = Space_Grotesk({
   subsets: ["latin"],
@@ -60,7 +67,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${space.variable} ${mono.variable} ${inter.variable} antialiased`}>
+      <body className={`${space.variable} ${mono.variable} ${inter.variable} ${archive.variable} antialiased`}>
         {children}
       </body>
     </html>
