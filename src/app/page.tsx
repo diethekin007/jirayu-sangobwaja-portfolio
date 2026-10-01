@@ -66,17 +66,10 @@ const skillGroups = [
   { title: 'Design & delivery', detail: 'From prototype to deployment', tools: ['Figma', 'Git', 'Vercel'] },
 ];
 
-// Six related astronomical marks, drawn on the same 32px grid.
+// Phosphor Light SVGs, self-hosted with their MIT license.
 function OrbitMark({ section }: { section: PanelId }) {
-  const paths: Record<PanelId, ReactNode> = {
-    about: <><circle cx="16" cy="16" r="6" /><ellipse cx="16" cy="16" rx="13" ry="8" transform="rotate(-35 16 16)" /><circle cx="26" cy="9" r="2" fill="currentColor" /></>,
-    projects: <><path d="m16 3 12 7v12l-12 7-12-7V10Z M4 10l12 7 12-7 M16 17v12" /><path d="m10 6 12 7" /></>,
-    skills: <><path d="m11 8-8 8 8 8 M21 8l8 8-8 8 M19 4l-6 24" /><circle cx="16" cy="16" r="13" strokeDasharray="1 5" /></>,
-    education: <><path d="m16 3 3 10 10 3-10 3-3 10-3-10-10-3 10-3Z" /><circle cx="16" cy="16" r="12" strokeDasharray="2 5" /></>,
-    contact: <><circle cx="16" cy="16" r="3" /><path d="M10 10a8.5 8.5 0 0 0 0 12 M22 10a8.5 8.5 0 0 1 0 12 M6 6a14 14 0 0 0 0 20 M26 6a14 14 0 0 1 0 20" /></>,
-    resume: <><path d="M9 3h10l5 5v21H9Z M19 3v6h5 M13 14h7 M13 19h7 M13 24h4" /><path d="M5 8v17" /></>,
-  };
-  return <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[section]}</svg>;
+  const icons: Record<PanelId, string> = { about: 'user-circle', projects: 'browsers', skills: 'code', education: 'book-open', contact: 'envelope-simple', resume: 'file-arrow-down' };
+  return <span className="section-glyph" aria-hidden="true" style={{ '--glyph': `url(/assets/icons/${icons[section]}.svg)` } as CSSProperties} />;
 }
 
 const navItems: Array<{ id: PanelId; label: string; eyebrow: string; icon: typeof UserRound; angle: number }> = [
@@ -412,4 +405,5 @@ export default function Home() {
     </main>
   );
 }
+
 

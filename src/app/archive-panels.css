@@ -1,4 +1,18 @@
 /* The archive lives in the same scene; its navigation and content have separate planes. */
+.section-glyph { display: block; width: 28px; height: 28px; flex-shrink: 0; background: currentColor; mask: var(--glyph) center / contain no-repeat; }
+.panel-nav .section-glyph { width: 23px; height: 23px; }
+.orbit-icon { position: relative; width: 62px; height: 62px; border: 0; border-radius: 50%; background: #080e2380; backdrop-filter: none; box-shadow: none; color: #eee7d8; }
+.orbit-icon::before { content: ''; position: absolute; inset: 0; border: 1px solid #d9d1bb70; border-radius: 50%; clip-path: polygon(0 0,42% 0,42% 18%,58% 18%,58% 0,100% 0,100% 42%,82% 42%,82% 58%,100% 58%,100% 100%,58% 100%,58% 82%,42% 82%,42% 100%,0 100%,0 58%,18% 58%,18% 42%,0 42%); transition: transform .5s ease,border-color .3s; }
+.orbit-icon::after { inset: -5px; border: 0; border-radius: 0; background: linear-gradient(#cbc3ad,#cbc3ad) center top / 1px 5px no-repeat,linear-gradient(#cbc3ad,#cbc3ad) right center / 5px 1px no-repeat,linear-gradient(#cbc3ad,#cbc3ad) center bottom / 1px 5px no-repeat,linear-gradient(#cbc3ad,#cbc3ad) left center / 5px 1px no-repeat; animation: none; opacity: .65; transition: transform .5s ease; }
+.orbit-item:hover .orbit-icon,.orbit-item:focus-visible .orbit-icon { background: #121a2fc9; box-shadow: none; color: #fff7e5; transform: scale(1.06); }
+.orbit-item:hover .orbit-icon::before,.orbit-item:focus-visible .orbit-icon::before { transform: rotate(45deg); border-color: #eee1c3; }
+.orbit-item:hover .orbit-icon::after,.orbit-item:focus-visible .orbit-icon::after { transform: rotate(-45deg); }
+.orbit-label { color: #c6c0d0; text-shadow: 0 2px 6px #030613; transition: color .25s; }
+.orbit-item:hover .orbit-label,.orbit-item:focus-visible .orbit-label { color: #fff1d8; }
+.stellar-ribbon { border: 1px solid #d3c7e13b; border-right-color: #e5dac97a; border-bottom-color: #d2c4e35c; box-shadow: none; }
+.stellar-ribbon::after { display: none; }
+.ribbon-two,.orbit-halo,.orbit-core { display: none; }
+@media(max-width:700px) { .orbit-icon { width: 49px; height: 49px; } .orbit-icon .section-glyph { width: 25px; height: 25px; } .panel-nav .section-glyph { width: 21px; height: 21px; } }
 .panel-backdrop { padding: 22px 4vw; overflow: hidden; background: linear-gradient(90deg,#050814e8,#070b20b8 55%,#090b1ad9); backdrop-filter: blur(3px); }
 .panel-backdrop::backdrop { background: #03050b40; }
 .content-panel { width: min(1450px,100%); height: min(850px,calc(100svh - 44px)); max-height: calc(100svh - 44px); display: grid; grid-template-columns: 175px minmax(0,1fr); grid-template-rows: 66px minmax(0,1fr); border: 0; border-radius: 0; background: transparent; box-shadow: none; overflow: visible; animation: archiveEnter .65s cubic-bezier(.22,1,.36,1) both; transform-origin: center; }
