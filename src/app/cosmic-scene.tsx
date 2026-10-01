@@ -29,8 +29,13 @@ void main(){
  color+=vec3(.04,.11,.23)*exp(-length(p-vec2(.42,-.22))*3.);
  // Colour stays inside the cloud filaments, rather than tinting the whole scene.
  float right=smoothstep(.43,.78,uv.x);
- float pearl=pow(detail,3.)*band*right;
- color+=mix(vec3(.04,.19,.24),vec3(.30,.08,.15),smoothstep(.35,.65,q.y))*pearl*.65;
+ float pearl=pow(detail,2.)*band*right;
+ float cool=exp(-length(p-vec2(.36,-.22))*3.5);
+ float rose=exp(-length(p-vec2(-.10,.36))*3.2);
+ float filament=(mist*.65+streak*.24+pearl*.55);
+ color+=vec3(.045,.27,.30)*filament*cool;
+ color+=vec3(.34,.085,.15)*filament*rose;
+ color+=vec3(.20,.16,.10)*pearl*smoothstep(.55,.72,detail)*.35;
  color*=.5+.5*smoothstep(0.,.58,uv.x);
  gl_FragColor=vec4(color,1.);
 }`;
