@@ -225,3 +225,37 @@
   .moon-phase { animation: none; opacity: 1; }
   .moon-loader { transition: none; }
 }
+
+/* Lunar entrance, inspired by NASA lunar imagery and restrained editorial motion. */
+.moon-loader { isolation: isolate; overflow: hidden; gap: 52px; background: radial-gradient(ellipse at 70% 60%, #28204060, transparent 55%), #060912; }
+.moon-loader-heading { position: relative; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.moon-loader-heading > span { font: 10px var(--font-label), monospace; letter-spacing: .24em; color: #928b9d; }
+.moon-loader-heading em { font: italic clamp(30px,4vw,48px)/1.1 var(--font-archive),Georgia,serif; color: #e4dccc; }
+.moon-sequence { position: relative; width: min(760px,100%); gap: clamp(12px,3vw,46px); }
+.moon-phase { opacity: 1; animation: none; gap: 30px; }
+.moon-phase svg { max-width: 84px; opacity: .35; animation: lunarArrival .85s cubic-bezier(.22,1,.36,1) both; animation-delay: var(--phase-delay); }
+.moon-light { opacity: 0; animation: lunarIllumination .9s ease forwards; animation-delay: var(--phase-delay); }
+.moon-phase span { font: 400 25px var(--font-archive),Georgia,serif; letter-spacing: .04em; color: #e1d8c7; animation: lunarLetter .7s cubic-bezier(.22,1,.36,1) both; animation-delay: calc(var(--phase-delay) + .2s); }
+.moon-loader-caption { display: flex; align-items: center; gap: 10px; color: #8d869b; font-size: 10px; letter-spacing: .06em; }
+.moon-loader-caption i { width: 3px; height: 3px; border-radius: 50%; background: #c8bbdd; animation: lunarPulse 1.8s ease-in-out infinite; }
+.lunar-orbit { position: absolute; z-index: -1; width: min(1150px,145vw); height: min(580px,80vw); border: 1px solid #c1afda0e; border-radius: 50%; transform: rotate(-18deg); pointer-events: none; }
+.lunar-orbit-two { transform: rotate(18deg) scale(.87); border-color: #c1afda08; }
+.lunar-starfield { position: absolute; z-index: -1; inset: 12% 8%; pointer-events: none; }
+.lunar-starfield i { position: absolute; width: 1px; height: 1px; background: #cfc4e3; border-radius: 50%; opacity: .3; animation: lunarPulse 3s ease-in-out infinite; animation-delay: var(--star-delay); }
+.moon-loader-leaving .moon-sequence { transform: translateY(-12px); opacity: 0; transition: transform .65s cubic-bezier(.22,1,.36,1),opacity .5s; }
+@keyframes lunarIllumination { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lunarLetter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes lunarPulse { 50% { opacity: .15; } }
+@media(max-width:700px) {
+  .moon-loader { gap: 40px; padding-inline: 20px; }
+  .moon-loader-heading > span { font-size: 8px; }
+  .moon-phase { gap: 24px; }
+  .moon-phase span { font-size: 20px; }
+  .moon-loader-heading em { font-size: 32px; }
+  .moon-loader-caption { font-size: 9px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .moon-phase svg,.moon-light,.moon-phase span { animation: none; opacity: 1; transform: none; }
+  .lunar-starfield i,.moon-loader-caption i { animation: none; }
+  .moon-loader-leaving .moon-sequence { transition: none; }
+}

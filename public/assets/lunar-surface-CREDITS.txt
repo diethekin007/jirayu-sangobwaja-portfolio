@@ -1,0 +1,5 @@
+Lunar surface image: NASA Scientific Visualization Studio, Moon Phase and Libration 2026.
+Asset: phase_full.1571_print.jpg
+Source: https://svs.gsfc.nasa.gov/5587/
+Credit: NASA Scientific Visualization Studio. Visualizer: Ernie Wright (USRA).
+Used as a clipped surface illustration for the six stylized waxing phases, not a scientific phase simulation.
