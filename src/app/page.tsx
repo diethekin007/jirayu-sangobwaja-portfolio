@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useState, type ReactNode, type CSSProperties } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode, type CSSProperties } from 'react';
 import Image from 'next/image';
 import CosmicScene from './cosmic-scene';
+import MoonLoader from './moon-loader';
 import {
   ArrowUpRight, BookOpen, BriefcaseBusiness, Code2, Download,
   GraduationCap, Layers3, Mail, Phone, UserRound, X, ChevronLeft, ChevronRight, Copy, Check,
@@ -211,6 +212,7 @@ function PanelContent({ panel }: { panel: PanelId }) {
 export default function Home() {
   const [activePanel, setActivePanel] = useState<PanelId | null>(null);
   const [introDone, setIntroDone] = useState(false);
+  const finishIntro = useCallback(() => setIntroDone(true), []);
   const [closing, setClosing] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -272,12 +274,7 @@ export default function Home() {
   }, [activePanel]);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setIntroDone(true), 650);
-    return () => window.clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    document.body.style.overflow = activePanel ? 'hidden' : '';
+    document.body.style.overflow = activePanel || !introDone ? 'hidden' : '';
     const dialog = dialogRef.current;
     if (activePanel && dialog && !dialog.open) {
       returnFocus.current = document.activeElement as HTMLElement;
@@ -294,10 +291,11 @@ export default function Home() {
     return () => {
       document.body.style.overflow = '';
     };
-  }, [activePanel]);
+  }, [activePanel, introDone]);
 
   return (
     <main className={`orbit-page ${introDone ? 'is-ready' : ''} ${activePanel ? 'panel-open' : ''}`}>
+      <MoonLoader onReady={finishIntro} />
       <CosmicScene paused={Boolean(activePanel)} />
       <div className="nebula nebula-purple" aria-hidden="true" />
       <div className="nebula nebula-blue" aria-hidden="true" />

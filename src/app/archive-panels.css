@@ -199,3 +199,29 @@
 @media (max-width: 360px) {
   .project-selector { margin-inline: -18px; padding-inline: 18px; }
 }
+
+/* Six lunar phases mark the entrance to the portfolio. */
+.moon-loader { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 42px; padding: 24px; background: radial-gradient(ellipse at 60% 45%, #211b38 0%, #0a0d1b 48%, #050710 100%); color: #e7e0cf; transition: opacity .7s ease, visibility .7s; }
+.moon-loader-leaving { opacity: 0; visibility: hidden; pointer-events: none; }
+.moon-loader-heading { font: italic 22px var(--font-archive), Georgia, serif; color: #beb2cc; }
+.moon-sequence { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: clamp(12px, 3vw, 40px); width: min(680px, 100%); }
+.moon-phase { display: flex; flex-direction: column; align-items: center; gap: 24px; opacity: .2; animation: lunarArrival .65s ease both; animation-delay: var(--phase-delay); }
+.moon-phase svg { display: block; width: 100%; max-width: 72px; overflow: visible; }
+.moon-phase span { font: 400 13px var(--font-label), monospace; letter-spacing: .12em; }
+.moon-loader-caption { font: 10px var(--font-body), sans-serif; color: #878398; letter-spacing: .06em; text-align: center; }
+.moon-loader-caption span { margin: 0 10px; color: #c6bba6; }
+@keyframes lunarArrival { from { opacity: .2; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+.orbit-page:not(.is-ready) .name-letter { animation-play-state: paused; }
+.orbit-page:not(.is-ready) .orbit-header, .orbit-page:not(.is-ready) .orbit-hero { visibility: hidden; }
+@media(max-width:700px) {
+  .moon-loader { padding: 24px 20px; gap: 32px; }
+  .moon-loader-heading { font-size: 20px; }
+  .moon-sequence { gap: 12px; }
+  .moon-phase { gap: 18px; }
+  .moon-phase span { font-size: 11px; }
+  .moon-loader-caption { font-size: 9px; letter-spacing: 0; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .moon-phase { animation: none; opacity: 1; }
+  .moon-loader { transition: none; }
+}
