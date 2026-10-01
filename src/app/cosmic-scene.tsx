@@ -27,6 +27,10 @@ void main(){
  float streak=pow(max(0.,1.-abs(cloud-.55)*9.),5.)*band;
  color+=vec3(.16,.09,.24)*streak;
  color+=vec3(.04,.11,.23)*exp(-length(p-vec2(.42,-.22))*3.);
+ // Colour stays inside the cloud filaments, rather than tinting the whole scene.
+ float right=smoothstep(.43,.78,uv.x);
+ float pearl=pow(detail,3.)*band*right;
+ color+=mix(vec3(.04,.19,.24),vec3(.30,.08,.15),smoothstep(.35,.65,q.y))*pearl*.65;
  color*=.5+.5*smoothstep(0.,.58,uv.x);
  gl_FragColor=vec4(color,1.);
 }`;
@@ -72,6 +76,8 @@ export default function CosmicScene({ paused }: { paused: boolean }) {
     let stars: Array<{ x: number; y: number; r: number; depth: number; phase: number }> = [];
     let dust: Array<{ angle: number; spread: number; phase: number; r: number }> = [];
     const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+    // Mostly lavender, with small cool and warm accents around the portrait.
+    const orbitColors = ['219,177,255', '213,195,255', '156,216,244', '242,174,207', '237,214,170', '219,177,255'];
     const resize = () => {
       width = canvas.clientWidth; height = canvas.clientHeight;
       const ratio = Math.min(devicePixelRatio, 1.5);
@@ -108,12 +114,13 @@ export default function CosmicScene({ paused }: { paused: boolean }) {
           const x = ((star.x * width + drift + pointer.x * star.depth) % (width + 24)) - 12;
           const y = ((star.y * height - drift * .22 + pointer.y * star.depth + height) % height);
           const alpha = .2 + star.depth * .28 + Math.pow((Math.sin(seconds * .7 + star.phase) + 1) * .5, 4) * .45;
-          context.fillStyle = `rgba(${index % 4 === 0 ? '183,164,255' : '238,229,255'},${alpha})`;
+          const tint = x > width * .52 && index % 3 === 0 ? orbitColors[index % orbitColors.length] : index % 4 === 0 ? '183,164,255' : '238,229,255';
+          context.fillStyle = `rgba(${tint},${alpha})`;
           context.beginPath(); context.arc(x,y,star.r,0,Math.PI*2); context.fill();
           if (index % 43 === 0) {
             const size = 3 + star.r * 3;
             const glow = context.createRadialGradient(x,y,0,x,y,size*3);
-            glow.addColorStop(0,`rgba(218,191,255,${alpha*.4})`); glow.addColorStop(1,'rgba(218,191,255,0)');
+            glow.addColorStop(0,`rgba(${tint},${alpha*.4})`); glow.addColorStop(1,`rgba(${tint},0)`);
             context.fillStyle=glow; context.fillRect(x-size*3,y-size*3,size*6,size*6);
             context.strokeStyle=`rgba(241,224,255,${alpha*.7})`; context.lineWidth=.6;
             context.beginPath(); context.moveTo(x-size,y); context.lineTo(x+size,y); context.moveTo(x,y-size); context.lineTo(x,y+size); context.stroke();
@@ -149,20 +156,29 @@ export default function CosmicScene({ paused }: { paused: boolean }) {
         const cx = width * (mobile ? .5 : .71), cy = height * (mobile ? .63 : .55);
         const radius = Math.min(width * (mobile ? .44 : .26), 410);
         context.save(); context.translate(cx,cy); context.rotate(-.19);
-        dust.forEach((particle) => {
+        dust.forEach((particle, index) => {
           const angle = particle.angle + seconds * .045;
           const r = radius * (1 + particle.spread);
           const x = Math.cos(angle) * r, y = Math.sin(angle) * r * .42;
           const alpha = (.12 + .42 * Math.pow((Math.sin(seconds + particle.phase)+1)*.5,2)) * (.45 + (Math.sin(angle)+1)*.25);
-          context.fillStyle=`rgba(219,177,255,${alpha})`;
+          const tint = orbitColors[index % orbitColors.length];
+          context.fillStyle=`rgba(${tint},${alpha})`;
           context.beginPath(); context.arc(x,y,particle.r,0,6.28); context.fill();
+          if (index % 31 === 0) {
+            const size = 5 + particle.r * 2;
+            const glow = context.createRadialGradient(x,y,0,x,y,size);
+            glow.addColorStop(0,`rgba(${tint},${alpha*.35})`);
+            glow.addColorStop(1,`rgba(${tint},0)`);
+            context.fillStyle = glow; context.fillRect(x-size,y-size,size*2,size*2);
+          }
         });
         // A few bright travellers trace the same ellipse as the fine dust.
         for (let i=0;i<3;i++) {
           const angle=seconds*.16+i*2.094;
           const x=Math.cos(angle)*radius,y=Math.sin(angle)*radius*.42;
           const glow=context.createRadialGradient(x,y,0,x,y,18);
-          glow.addColorStop(0,'rgba(255,239,255,.9)'); glow.addColorStop(.15,'rgba(219,162,255,.4)'); glow.addColorStop(1,'rgba(180,111,255,0)');
+          const tint = orbitColors[i + 2];
+          glow.addColorStop(0,'rgba(255,248,244,.85)'); glow.addColorStop(.15,`rgba(${tint},.4)`); glow.addColorStop(1,`rgba(${tint},0)`);
           context.fillStyle=glow; context.fillRect(x-18,y-18,36,36);
         }
         context.restore();
